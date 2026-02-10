@@ -1,0 +1,100 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../../controllers/auth_controller.dart';
+import '../../routes/app_routes.dart';
+
+class LoginView extends StatelessWidget {
+  const LoginView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final AuthController controller = Get.put(AuthController());
+
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Logo/App Name
+                  Icon(Icons.restaurant_menu,
+                          size: 80, color: Theme.of(context).primaryColor)
+                      .animate()
+                      .scale(duration: 600.ms, curve: Curves.elasticOut),
+                  const SizedBox(height: 16),
+                  Text(
+                    'AteIt',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                  ).animate().fadeIn().slideY(begin: 0.3, duration: 500.ms),
+                  const SizedBox(height: 40),
+
+                  // Fields
+                  TextField(
+                    controller: controller.loginUsernameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      prefixIcon: Icon(Icons.person_outline),
+                    ),
+                  ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.2),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: controller.loginPasswordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      prefixIcon: Icon(Icons.lock_outline),
+                    ),
+                  ).animate().fadeIn(delay: 300.ms).slideX(begin: 0.2),
+
+                  // Forgot Password
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD),
+                      child: const Text('Forgot Password?'),
+                    ),
+                  ).animate().fadeIn(delay: 400.ms),
+                  const SizedBox(height: 24),
+
+                  // Login Button
+                  Obx(() => ElevatedButton(
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : controller.login,
+                        child: controller.isLoading.value
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : const Text('Login'),
+                      )).animate().fadeIn(delay: 500.ms).scale(),
+
+                  const SizedBox(height: 16),
+
+                  // Register
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Don't have an account?"),
+                      TextButton(
+                        onPressed: () => Get.toNamed(Routes.REGISTER),
+                        child: const Text('Create Account'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
