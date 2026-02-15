@@ -120,6 +120,11 @@ class AuthController extends GetxController {
       (response) async {
         if (response?.status == true) {
           await LocalStorage().writeUser(response?.data ?? User());
+          await LocalStorage().writeUser(User(
+              state: regStateController.text,
+              city: regCityController.text,
+              district: regDistrictController.text,
+              pincode: regPincodeController.text));
           Get.offAllNamed(Routes.LOGIN);
         } else {
           errorMessage.value = 'Failed to register!';

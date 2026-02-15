@@ -41,9 +41,26 @@ class WalletController extends GetxController {
         'status': 'Pending',
         'date': DateTime.now().toString(),
       });
+      // Auto approve for testing
+      balance.value += amount;
+
       isLoading.value = false;
       Get.back();
-      Get.snackbar('Success', 'Topup requested for ₹$amount');
+      Get.snackbar('Success', 'Topup success for ₹$amount');
     });
+  }
+
+  bool deductBalance(double amount) {
+    if (balance.value >= amount) {
+      balance.value -= amount;
+      transactions.add({
+        "id": "TXN${DateTime.now().millisecondsSinceEpoch}",
+        "amount": -amount,
+        "type": "Debit",
+        "date": DateTime.now().toString()
+      });
+      return true;
+    }
+    return false;
   }
 }

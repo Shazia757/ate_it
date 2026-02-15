@@ -1,7 +1,9 @@
+import 'package:ate_it/controllers/cart_controller.dart';
+import 'package:ate_it/controllers/restaurant_controller.dart';
 import 'package:ate_it/model/restaurant_model.dart';
+import 'package:ate_it/views/cart/cart_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/restaurant_controller.dart';
 
 class RestaurantDetailsView extends StatelessWidget {
   const RestaurantDetailsView({super.key});
@@ -14,7 +16,7 @@ class RestaurantDetailsView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(restaurant.restaurantName??''),
+        title: Text(restaurant.restaurantName ?? ''),
         actions: [
           IconButton(
             icon: const Icon(Icons.directions),
@@ -56,7 +58,7 @@ class RestaurantDetailsView extends StatelessWidget {
                         color: isAvailable ? Colors.green : Colors.grey,
                         size: 24,
                       ),
-                      title: Text(meal.name),
+                      title: Text(meal.name ?? ''),
                       subtitle: Text(
                           '₹${meal.price} ${meal.originalPrice != null ? "(${meal.originalPrice})" : ""}'),
                       trailing: isAvailable
@@ -77,6 +79,18 @@ class RestaurantDetailsView extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButton: Obx(() {
+        final cartController = Get.find<CartController>();
+        if (cartController.cartItems.isEmpty) return const SizedBox.shrink();
+
+        return FloatingActionButton.extended(
+          onPressed: () => Get.to(() => const CartView()),
+          backgroundColor: Colors.teal,
+          icon: const Icon(Icons.shopping_cart),
+          label: Text(
+              '${cartController.cartItems.length} Items - ₹${cartController.totalAmount}'),
+        );
+      }),
     );
   }
 }

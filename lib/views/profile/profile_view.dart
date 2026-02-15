@@ -28,7 +28,11 @@ class ProfileView extends StatelessWidget {
           final isEditing = controller.isEditing.value;
           return Column(
             children: [
-              _buildField('Full Name', controller.nameController, isEditing),
+              _buildField(
+                  'First Name', controller.firstNameController, isEditing),
+              _buildField(
+                  'Last Name', controller.lastNameController, isEditing),
+              _buildField('Username', controller.usernameController, isEditing),
               _buildField('Phone', controller.phoneController, isEditing,
                   isPhone: true),
               _buildField('Email', controller.emailController, isEditing),

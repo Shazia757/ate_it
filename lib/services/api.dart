@@ -22,7 +22,6 @@ class ApiService extends GetxService {
   Map<String, String> generateHeader() {
     final String credentials =
         '${LocalStorage().readUser().username}:${LocalStorage().readPass()}';
-    // 'test:test123'; //'$username:$password';
     final String encoded = base64Encode(utf8.encode(credentials));
     final String basicAuth = 'Basic $encoded';
 
@@ -84,6 +83,23 @@ class ApiService extends GetxService {
     return null;
   }
 
+  Future<GeneralResponse?> updateProfile(Map<String, dynamic> data) async {
+    try {
+      final response = await http
+          .patch(Uri.parse(Urls.profile),
+              body: jsonEncode(data), headers: generateHeader())
+          .timeout(Duration(seconds: 60));
+
+      if (checkValidations(response.body)) {
+        final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+        return GeneralResponse.fromJson(responseJson);
+      }
+    } catch (e) {
+      log('Api error:$e');
+    }
+    return null;
+  }
+
   //------------------Locations---------------------------//
   Future<List<StateModel>> getStates() async {
     try {
@@ -122,6 +138,8 @@ class ApiService extends GetxService {
       final response = await http
           .get(Uri.parse(Urls.restaurants), headers: generateHeader())
           .timeout(Duration(seconds: 60));
+      log(response.body);
+
       if (checkValidations(response.body)) {
         final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
         return RestaurantResponse.fromJson(responseJson);
@@ -132,26 +150,28 @@ class ApiService extends GetxService {
     return null;
   }
 
-  Future<List<FoodItem>> getRestaurantMenu(int id) async {
+  Future<MenuResponse?> getRestaurantMenu(int id) async {
     try {
-      final response = await http.get(Uri.parse(Urls.restaurantMenu(id)));
+      log("restaurent menu api working");
+      log(id.toString());
+
+      final response = await http
+          .get(Uri.parse(Urls.restaurantMenu(id)), headers: generateHeader())
+          .timeout(Duration(seconds: 60));
       if (checkValidations(response.body)) {
-        final json = jsonDecode(response.body);
-        final List data = json['data'];
-        return data.map((e) => FoodItem.fromJson(e)).toList();
+        final json = jsonDecode(response.body) as Map<String, dynamic>;
+        return MenuResponse.fromJson(json);
       }
-      return [];
     } catch (e) {
-      return [];
+      log('Api error:$e');
     }
   }
 
   Future<OrderModel?> createOrder(Map<String, dynamic> orderData) async {
     try {
       final response = await http.post(Uri.parse(Urls.orders),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(orderData));
-
+          headers: generateHeader(), body: jsonEncode(orderData));
+      log(response.body);
       if (checkValidations(response.body)) {
         final json = jsonDecode(response.body);
         final data = json['data'];

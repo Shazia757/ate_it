@@ -1,3 +1,4 @@
+import 'package:ate_it/controllers/cart_controller.dart';
 import 'package:ate_it/model/restaurant_model.dart';
 import 'package:ate_it/services/api.dart';
 import 'package:get/get.dart';
@@ -5,28 +6,32 @@ import 'package:url_launcher/url_launcher.dart';
 
 class RestaurantController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
+  final CartController _cartController = Get.put(CartController());
 
   var meals = <FoodItem>[].obs;
   var isLoading = true.obs;
+  var currentRestaurantId = (-1).obs;
+  var currentRestaurantName = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // In a real app, we'd pass the ID and fetch.
-    // For now assuming we are on details page and arguments are passed or handled in UI.
-    // But this controller is put() in the view.
-    // We need to know WHICH restaurant to fetch for.
-    // The view passes arguments. We can get arguments here or call a method.
     if (Get.arguments != null && Get.arguments is RestaurantStatus) {
       final restaurant = Get.arguments as RestaurantStatus;
+      currentRestaurantName.value = restaurant.restaurantName ?? '';
       fetchMenu(restaurant.id ?? 0);
     }
   }
 
-  void fetchMenu(int restaurantId) async {
+  void fetchMenu(int restaurantId) {
+    currentRestaurantId.value = restaurantId;
     try {
       isLoading.value = true;
-      meals.value = await _apiService.getRestaurantMenu(restaurantId);
+      _apiService.getRestaurantMenu(restaurantId).then(
+        (value) {
+          meals.assignAll(value?.data ?? []);
+        },
+      );
     } catch (e) {
       Get.snackbar('Error', 'Failed to load menu');
     } finally {
@@ -35,9 +40,8 @@ class RestaurantController extends GetxController {
   }
 
   void addToCart(FoodItem meal) {
-    // Add logic to add to cart (using another controller or service)
-    Get.snackbar('Added', '${meal.name} added to cart',
-        duration: const Duration(seconds: 1));
+    _cartController.addToCart(
+        meal, currentRestaurantId.value, currentRestaurantName.value);
   }
 
   Future<void> openMap(RestaurantStatus restaurant) async {

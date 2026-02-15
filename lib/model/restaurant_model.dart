@@ -42,7 +42,7 @@ class RestaurantData {
       previous: json['previous'],
       results: (json['results'] as List<dynamic>?)
           ?.map((e) => RestaurantStatus.fromJson(e as Map<String, dynamic>))
-          .toList(),   
+          .toList(),
     );
   }
 
@@ -117,12 +117,47 @@ class RestaurantStatus {
   }
 }
 
+class MenuResponse {
+  bool? status;
+  String? message;
+  List<FoodItem>? data;
+
+  MenuResponse({
+    this.status,
+    this.message,
+    this.data,
+  });
+  factory MenuResponse.fromJson(Map<String, dynamic> json) {
+    return MenuResponse(
+      status: json['status'] as bool?,
+      message: json['message'] as String?,
+      data: (json['data'] as List<dynamic>?)
+          ?.map((e) => FoodItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'message': message,
+      'data': data?.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
 class FoodItem {
-  final int id;
-  final String name;
-  final String price;
-  final String? originalPrice;
-  final bool isAvailable;
+  int? id;
+  String? name;
+  String? description;
+  String price;
+  String? originalPrice;
+  int? quantity;
+  Image? image;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  int? restaurant;
+  bool isAvailable;
 
   FoodItem({
     required this.id,
@@ -130,16 +165,43 @@ class FoodItem {
     required this.price,
     this.originalPrice,
     required this.isAvailable,
+    this.createdAt,
+    this.description,
+    this.image,
+    this.quantity,
+    this.restaurant,
+    this.updatedAt,
   });
 
   factory FoodItem.fromJson(Map<String, dynamic> json) {
     return FoodItem(
-      id: json['id'],
-      name: json['name'],
-      price: json['price'],
-      originalPrice: json['original_price'],
-      isAvailable: json['is_available'],
-    );
+        id: json['id'],
+        name: json['name'],
+        price: json['price'],
+        originalPrice: json['original_price'],
+        isAvailable: json['is_available'],
+        image: json['image'],
+        createdAt: DateTime.tryParse(json['created_at']),
+        updatedAt: DateTime.tryParse(json['updated_at']),
+        description: json['description'],
+        quantity: json['quantity'],
+        restaurant: json['restaurant']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'original_price': originalPrice,
+      'is_available': isAvailable,
+      'image': image,
+      'created_at': createdAt.toString(),
+      'updated_at': updatedAt.toString(),
+      'description': description,
+      'quantity': quantity,
+      'restaurant': restaurant
+    };
   }
 }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:ate_it/views/cart/cart_view.dart';
+import 'package:ate_it/controllers/cart_controller.dart';
 import '../../controllers/home_controller.dart';
 import '../../routes/app_routes.dart';
 
@@ -12,15 +14,24 @@ class HomeView extends GetView<HomeController> {
     if (!Get.isRegistered<HomeController>()) {
       Get.put(HomeController());
     }
+    // Ensure CartController is available and persists
+    if (!Get.isRegistered<CartController>()) {
+      Get.put(CartController());
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('AteIt - Home'),
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () => Get.to(() => const CartView()),
+            icon: const Icon(Icons.shopping_cart),
+          )
+        ],
       ),
       body: Column(
         children: [
-          Text(''),
           Obx(() {
             if (controller.isLoading.value) {
               return const Center(child: CircularProgressIndicator());

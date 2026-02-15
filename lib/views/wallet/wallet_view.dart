@@ -235,7 +235,7 @@ class TransactionsView extends StatelessWidget {
                   isCredit ? Icons.arrow_downward : Icons.arrow_upward,
                   color: isCredit ? Colors.green : Colors.red,
                 ),
-                title: Text(tx['desc']),
+                title: Text(tx['desc']??''),
                 subtitle: Text(tx['date']),
                 trailing: Text(
                   '${isCredit ? "+" : "-"} ₹${tx['amount']}',

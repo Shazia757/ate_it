@@ -1,21 +1,16 @@
+import 'package:ate_it/services/api.dart';
+import 'package:ate_it/services/local_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 class ProfileController extends GetxController {
-  // Simulating user data
-  var user = {
-    'name': 'John Doe',
-    'phone': '9876543210',
-    'email': 'john@example.com',
-    'state': 'Kerala',
-    'district': 'Ernakulam',
-    'city': 'Kochi',
-    'pincode': '682001',
-  }.obs;
+  final ApiService _apiService = Get.put(ApiService());
 
   var isEditing = false.obs;
 
-  late TextEditingController nameController;
+  late TextEditingController firstNameController;
+  late TextEditingController lastNameController;
+  late TextEditingController usernameController;
   late TextEditingController phoneController;
   late TextEditingController emailController;
   late TextEditingController stateController;
@@ -26,25 +21,48 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    nameController = TextEditingController(text: user['name']);
-    phoneController = TextEditingController(text: user['phone']);
-    emailController = TextEditingController(text: user['email']);
-    stateController = TextEditingController(text: user['state']);
-    districtController = TextEditingController(text: user['district']);
-    cityController = TextEditingController(text: user['city']);
-    pincodeController = TextEditingController(text: user['pincode']);
+    firstNameController =
+        TextEditingController(text: LocalStorage().readUser().firstName);
+    lastNameController =
+        TextEditingController(text: LocalStorage().readUser().lastName);
+    usernameController =
+        TextEditingController(text: LocalStorage().readUser().username);
+    phoneController = TextEditingController(
+        text: LocalStorage().readUser().phoneNumber.toString());
+    emailController =
+        TextEditingController(text: LocalStorage().readUser().email);
+    stateController =
+        TextEditingController(text: LocalStorage().readUser().state);
+    districtController =
+        TextEditingController(text: LocalStorage().readUser().district);
+    cityController =
+        TextEditingController(text: LocalStorage().readUser().city);
+    pincodeController =
+        TextEditingController(text: LocalStorage().readUser().pincode);
   }
 
-  void toggleEdit() {
+  void toggleEdit() async {
     if (isEditing.value) {
+      await _apiService.updateProfile({
+        'username': usernameController.text,
+        'first_name': firstNameController.text,
+        'last_name': lastNameController.text,
+        'email': emailController.text,
+        'phone_number': phoneController.text,
+        'state': stateController.text,
+        'district': districtController.text,
+        'city': cityController.text,
+        'pincode': pincodeController.text
+      }).then(
+        (value) {
+          if (value?.status == true) {
+            Get.snackbar('Success', 'Profile updated');
+          } else {
+            Get.snackbar('Error', 'Failed to update');
+          }
+        },
+      );
       // Save changes logic
-      user['name'] = nameController.text;
-      user['phone'] = phoneController.text;
-      user['email'] = emailController.text;
-      user['state'] = stateController.text;
-      user['district'] = districtController.text;
-      user['city'] = cityController.text;
-      user['pincode'] = pincodeController.text;
 
       Get.snackbar('Success', 'Profile Updated');
     }
