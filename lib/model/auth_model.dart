@@ -1,19 +1,21 @@
+import 'package:ate_it/model/user_model.dart';
+
 class LoginResponse {
   bool? status;
   String? message;
-  // Users? data;
+  User? data;
 
   LoginResponse({
     required this.status,
-    // required this.data,
+    required this.data,
     this.message,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
-      // data: json['data'] != null
-      //     ? Users.fromJson(json['data'] as Map<String, dynamic>)
-      //     : Users(),
+      data: json['data'] != null
+          ? User.fromJson(json['data'] as Map<String, dynamic>)
+          : User(),
       status: json['status'] as bool?,
       message: json['message'] as String?,
     );

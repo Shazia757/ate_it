@@ -9,12 +9,12 @@ class RestaurantDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get arguments passed from Home
-    final restaurant = Get.arguments as Restaurant;
+    final restaurant = Get.arguments as RestaurantStatus;
     final RestaurantController controller = Get.put(RestaurantController());
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(restaurant.name),
+        title: Text(restaurant.restaurantName??''),
         actions: [
           IconButton(
             icon: const Icon(Icons.directions),

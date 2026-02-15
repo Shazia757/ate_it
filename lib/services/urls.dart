@@ -2,10 +2,10 @@ class Urls {
   static const String base = 'https://ate-it-backend.vercel.app/api/v1';
 
   // Auth
-  static const String register = '$base/auth/register/';
-  static const String login = '$base/auth/login/';
-  static const String logout = '$base/auth/logout/';
-  static const String profile = '$base/auth/profile/';
+  static const String register = '$base/auth/auth/register/';
+  static const String login = '$base/auth/auth/login/';
+  static const String logout = '$base/auth/auth/logout/';
+  static const String profile = '$base/auth/auth/profile/';
 
   // Location
   static const String states = '$base/auth/locations/states/';

@@ -17,9 +17,9 @@ class RestaurantController extends GetxController {
     // But this controller is put() in the view.
     // We need to know WHICH restaurant to fetch for.
     // The view passes arguments. We can get arguments here or call a method.
-    if (Get.arguments != null && Get.arguments is Restaurant) {
-      final restaurant = Get.arguments as Restaurant;
-      fetchMenu(restaurant.id);
+    if (Get.arguments != null && Get.arguments is RestaurantStatus) {
+      final restaurant = Get.arguments as RestaurantStatus;
+      fetchMenu(restaurant.id ?? 0);
     }
   }
 
@@ -40,7 +40,7 @@ class RestaurantController extends GetxController {
         duration: const Duration(seconds: 1));
   }
 
-  Future<void> openMap(Restaurant restaurant) async {
+  Future<void> openMap(RestaurantStatus restaurant) async {
     // Mock coordinates
     final double lat = 12.9716;
     final double lng = 77.5946;
