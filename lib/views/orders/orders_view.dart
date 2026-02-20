@@ -1,7 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/orders_controller.dart';
-import '../../routes/app_routes.dart';
 
 class OrdersView extends StatelessWidget {
   const OrdersView({super.key});
@@ -32,7 +33,7 @@ class OrdersView extends StatelessWidget {
           }
           return TabBarView(
             children: [
-              _buildCurrentOrders(controller),
+              _currentOrders(controller),
               _buildPastOrders(controller),
             ],
           );
@@ -41,16 +42,16 @@ class OrdersView extends StatelessWidget {
     );
   }
 
-  Widget _buildCurrentOrders(OrdersController controller) {
-    if (controller.currentOrders.isEmpty) {
+  Widget _currentOrders(OrdersController controller) {
+    if (controller.currOrders.isEmpty) {
+      log(controller.currOrders.toString());
       return const Center(child: Text('No active orders'));
     }
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: controller.currentOrders.length,
+      itemCount: controller.currOrders.length,
       itemBuilder: (context, index) {
-        final order = controller.currentOrders[index];
-        // final items = order['items'] as List; // API doesn't return items in list
+        final order = controller.currOrders[index];
 
         return Card(
           child: Padding(
@@ -63,14 +64,14 @@ class OrdersView extends StatelessWidget {
                   children: [
                     Text('Order #${order.orderId}',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text(order.status,
+                    Text(order.status ?? '',
                         style: const TextStyle(color: Colors.teal)),
                   ],
                 ),
                 const Divider(),
-                Text(order.restaurantName ?? 'Unknown Restaurant',
+                Text(order.restaurant?.restaurantName ?? 'Unknown Restaurant',
                     style: const TextStyle(fontSize: 16)),
-                // Text(order['location'], style: const TextStyle(color: Colors.grey)), // No location
+                // Text(order['location'], style: const TextStyle(color: Colors.grey)),
                 const SizedBox(height: 10),
                 /*
                 ...items.map((item) => Row(
@@ -81,7 +82,6 @@ class OrdersView extends StatelessWidget {
                       ],
                     )),
                 */
-                const Text("Items details not available from list API"),
                 const Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,21 +110,20 @@ class OrdersView extends StatelessWidget {
       itemCount: controller.pastOrders.length,
       itemBuilder: (context, index) {
         final order = controller.pastOrders[index];
-        // final items = order['items'] as List;
 
         return Card(
           child: ListTile(
-            title: Text(order.restaurantName ?? 'Unknown'),
+            title: Text(order.restaurant?.restaurantName ?? 'Unknown'),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Date: ${order.createdAt ?? "N/A"}'),
+                Text('Date: ${order.createdAt}'),
                 // Text('Items: ${items.map((e) => e['name'] ?? e['type']).join(', ')}'),
                 Text('Total: ₹${order.totalAmount}'),
               ],
             ),
             trailing: ElevatedButton(
-              onPressed: () => Get.toNamed(Routes.REPORT_ISSUE,
+              onPressed: () => Get.to(()=>ReportIssueView(),
                   arguments: order.orderId), // Passing OrderID string
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,

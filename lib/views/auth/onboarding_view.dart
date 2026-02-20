@@ -8,14 +8,14 @@ class OnboardingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OnboardingController controller = Get.put(OnboardingController());
+    final OnboardingController c = Get.put(OnboardingController());
 
     final List<Map<String, String>> pages = [
       {
         'title': 'Save Food, Save Money',
         'desc':
             'Get delicious meals from your favorite restaurants at half the price.',
-        'icon': 'Icon(Icons.discount)', // Placeholder for graphic
+        'icon': 'Icon(Icons.discount)',
       },
       {
         'title': 'Fight Food Waste',
@@ -36,16 +36,14 @@ class OnboardingView extends StatelessWidget {
           children: [
             Expanded(
               child: PageView.builder(
-                controller: controller.pageController,
+                controller: c.pageController,
                 itemCount: pages.length,
-                onPageChanged: controller.updateIndex,
+                onPageChanged: c.updateIndex,
                 itemBuilder: (context, index) {
                   return _buildPage(pages[index], context);
                 },
               ),
             ),
-
-            // Indicators
             Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(pages.length, (index) {
@@ -53,7 +51,7 @@ class OnboardingView extends StatelessWidget {
                       duration: const Duration(milliseconds: 300),
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       height: 10,
-                      width: controller.pageIndex.value == index ? 24 : 10,
+                      width: c.pageIndex.value == index ? 24 : 10,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(5),
@@ -61,18 +59,15 @@ class OnboardingView extends StatelessWidget {
                     );
                   }),
                 )),
-
             const SizedBox(height: 32),
-
-            // Next/Get Started Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
               child: Obx(() {
-                final isLast = controller.pageIndex.value == pages.length - 1;
+                final isLast = c.pageIndex.value == pages.length - 1;
                 return ElevatedButton(
                   onPressed: isLast
-                      ? controller.completeOnboarding
-                      : () => controller.pageController
+                      ? c.completeOnboarding
+                      : () => c.pageController
                           .nextPage(duration: 300.ms, curve: Curves.ease),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -97,12 +92,13 @@ class OnboardingView extends StatelessWidget {
 
   Widget _buildPage(Map<String, String> data, BuildContext context) {
     IconData iconData;
-    if (data['title']!.contains('Save'))
+    if (data['title']!.contains('Save')) {
       iconData = Icons.savings;
-    else if (data['title']!.contains('Fight'))
+    } else if (data['title']!.contains('Fight')) {
       iconData = Icons.eco;
-    else
+    } else {
       iconData = Icons.fastfood;
+    }
 
     return Padding(
       padding: const EdgeInsets.all(32.0),
@@ -112,7 +108,7 @@ class OnboardingView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(iconData, size: 100, color: Colors.white)

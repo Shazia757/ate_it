@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 class ProfileController extends GetxController {
-  final ApiService _apiService = Get.put(ApiService());
-
   var isEditing = false.obs;
 
   late TextEditingController firstNameController;
@@ -13,10 +11,10 @@ class ProfileController extends GetxController {
   late TextEditingController usernameController;
   late TextEditingController phoneController;
   late TextEditingController emailController;
-  late TextEditingController stateController;
-  late TextEditingController districtController;
-  late TextEditingController cityController;
-  late TextEditingController pincodeController;
+  // late TextEditingController stateController;
+  // late TextEditingController districtController;
+  // late TextEditingController cityController;
+  // late TextEditingController pincodeController;
 
   @override
   void onInit() {
@@ -31,28 +29,28 @@ class ProfileController extends GetxController {
         text: LocalStorage().readUser().phoneNumber.toString());
     emailController =
         TextEditingController(text: LocalStorage().readUser().email);
-    stateController =
-        TextEditingController(text: LocalStorage().readUser().state);
-    districtController =
-        TextEditingController(text: LocalStorage().readUser().district);
-    cityController =
-        TextEditingController(text: LocalStorage().readUser().city);
-    pincodeController =
-        TextEditingController(text: LocalStorage().readUser().pincode);
+    // stateController =
+    //     TextEditingController(text: LocalStorage().readUser().state);
+    // districtController =
+    //     TextEditingController(text: LocalStorage().readUser().district);
+    // cityController =
+    //     TextEditingController(text: LocalStorage().readUser().city);
+    // pincodeController =
+    //     TextEditingController(text: LocalStorage().readUser().pincode);
   }
 
   void toggleEdit() async {
     if (isEditing.value) {
-      await _apiService.updateProfile({
+      await ApiService().updateProfile({
         'username': usernameController.text,
         'first_name': firstNameController.text,
         'last_name': lastNameController.text,
         'email': emailController.text,
         'phone_number': phoneController.text,
-        'state': stateController.text,
-        'district': districtController.text,
-        'city': cityController.text,
-        'pincode': pincodeController.text
+        // 'state': stateController.text,
+        // 'district': districtController.text,
+        // 'city': cityController.text,
+        // 'pincode': pincodeController.text
       }).then(
         (value) {
           if (value?.status == true) {

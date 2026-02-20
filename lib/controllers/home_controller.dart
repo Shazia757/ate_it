@@ -5,7 +5,6 @@ import 'package:ate_it/services/api.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  final ApiService _apiService = Get.find<ApiService>();
   RxList<RestaurantStatus> restaurantList = <RestaurantStatus>[].obs;
   var isLoading = true.obs;
 
@@ -18,7 +17,7 @@ class HomeController extends GetxController {
   void fetchRestaurants()  {
     try {
       isLoading.value = true;
-       _apiService.getRestaurants().then(
+       ApiService().getRestaurants().then(
         (value) {
           restaurantList.assignAll(value?.data?.results ?? []);
           isLoading.value = false;

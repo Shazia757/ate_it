@@ -1,23 +1,16 @@
+import 'package:ate_it/views/home/restaurant_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:ate_it/views/cart/cart_view.dart';
-import 'package:ate_it/controllers/cart_controller.dart';
 import '../../controllers/home_controller.dart';
-import '../../routes/app_routes.dart';
 
-class HomeView extends GetView<HomeController> {
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (!Get.isRegistered<HomeController>()) {
-      Get.put(HomeController());
-    }
-    // Ensure CartController is available and persists
-    if (!Get.isRegistered<CartController>()) {
-      Get.put(CartController());
-    }
+   HomeController c=Get.put(HomeController());
 
     return Scaffold(
       appBar: AppBar(
@@ -33,20 +26,20 @@ class HomeView extends GetView<HomeController> {
       body: Column(
         children: [
           Obx(() {
-            if (controller.isLoading.value) {
+            if (c.isLoading.value) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            if (controller.restaurantList.isEmpty) {
+            if (c.restaurantList.isEmpty) {
               return const Center(child: Text('No restaurants found.'));
             }
 
             return Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: controller.restaurantList.length,
+                itemCount: c.restaurantList.length,
                 itemBuilder: (context, index) {
-                  final restaurant = controller.restaurantList[index];
+                  final restaurant = c.restaurantList[index];
                   final isOpen = restaurant.isOpen;
 
                   return Card(
@@ -84,7 +77,6 @@ class HomeView extends GetView<HomeController> {
                               ],
                             ),
                             const SizedBox(height: 4),
-                            // Distance removed as not in API
                           ],
                         ),
                       ),
@@ -100,7 +92,7 @@ class HomeView extends GetView<HomeController> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: (isOpen ? Colors.green : Colors.red)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
                                   )
@@ -116,7 +108,7 @@ class HomeView extends GetView<HomeController> {
                       onTap: isOpen
                           ? () {
                               // Navigate to Restaurant Details
-                              Get.toNamed(Routes.RESTAURANT_DETAILS,
+                              Get.to(()=>RestaurantDetailsView(),
                                   arguments: restaurant);
                             }
                           : null,

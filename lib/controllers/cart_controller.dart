@@ -1,14 +1,13 @@
 import 'package:ate_it/model/restaurant_model.dart';
-import 'package:ate_it/services/api.dart';
+// import 'package:ate_it/services/api.dart';
 import 'package:ate_it/controllers/wallet_controller.dart';
+import 'package:ate_it/services/api.dart';
 import 'package:get/get.dart';
 
 class CartController extends GetxController {
-  final ApiService _apiService = Get.find<ApiService>();
-  // We need wallet access to check balance
-  final WalletController _walletController = Get.put(WalletController());
+  final WalletController c = Get.put(WalletController());
 
-  var cartItems = <FoodItem, int>{}.obs; // Item -> Quantity
+  var cartItems = <FoodItem, int>{}.obs;
   var restaurantId = (-1).obs;
   var restaurantName = ''.obs;
 
@@ -21,7 +20,6 @@ class CartController extends GetxController {
   }
 
   void addToCart(FoodItem item, int restaurantId, String? restaurantName) {
-    // If adding from a different restaurant, clear cart confirmation
     if (this.restaurantId.value != -1 &&
         this.restaurantId.value != restaurantId) {
       Get.defaultDialog(
@@ -32,7 +30,7 @@ class CartController extends GetxController {
         textCancel: "No",
         onConfirm: () {
           clearCart();
-          Get.back(); // Close dialog
+          Get.back();
           _addItem(item, restaurantId, restaurantName);
         },
       );
@@ -45,20 +43,19 @@ class CartController extends GetxController {
     restaurantId.value = rId;
     restaurantName.value = rName ?? '';
 
-    // Check if item exists
     FoodItem? existingItem;
-    cartItems.keys.forEach((key) {
+    for (var key in cartItems.keys) {
       if (key.id == item.id) {
         existingItem = key;
       }
-    });
+    }
 
     if (existingItem != null) {
-      cartItems[existingItem!] = (cartItems[existingItem] ?? 0) + 1;
+      cartItems[existingItem] = (cartItems[existingItem] ?? 0) + 1;
     } else {
       cartItems[item] = 1;
     }
-    // Force refresh to update UI
+
     cartItems.refresh();
     Get.snackbar('Added', '${item.name} added to cart');
   }
@@ -73,7 +70,7 @@ class CartController extends GetxController {
 
     if (existingItem != null) {
       if (cartItems[existingItem]! > 1) {
-        cartItems[existingItem!] = cartItems[existingItem]! - 1;
+        cartItems[existingItem] = cartItems[existingItem]! - 1;
       } else {
         cartItems.remove(existingItem);
       }
@@ -94,12 +91,11 @@ class CartController extends GetxController {
   Future<void> checkout() async {
     if (cartItems.isEmpty) return;
 
-    if (_walletController.balance.value < totalAmount) {
+    if (c.balance.value < totalAmount) {
       Get.snackbar("Error", "Insufficient wallet balance. Please top up.");
       return;
     }
 
-    // Construct Order Data
     List<Map<String, dynamic>> itemsPayload = [];
     cartItems.forEach((item, qty) {
       itemsPayload
@@ -111,22 +107,20 @@ class CartController extends GetxController {
       "items": itemsPayload
     };
 
-    // Optimistically deduct
-    bool success = _walletController.deductBalance(totalAmount);
-    if (!success) {
-      Get.snackbar("Error", "Transaction failed.");
-      return;
-    }
+    // bool success = c.deductBalance(totalAmount);
+    // if (!success) {
+    //   Get.snackbar("Error", "Transaction failed.");
+    //   return;
+    // }
 
-    var order = await _apiService.createOrder(orderData);
+    var order = await ApiService().createOrder(orderData);
     if (order != null) {
       Get.snackbar(
           "Success", "Order placed successfully! ID: ${order.orderId}");
       clearCart();
-      Get.offAllNamed('/home');
+      Get.back();
     } else {
-      // Refund if API fails
-      _walletController.requestTopup(totalAmount);
+      c.requestTopup(totalAmount);
       Get.snackbar("Error", "Failed to place order. Amount refunded.");
     }
   }

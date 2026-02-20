@@ -1,15 +1,16 @@
+import 'package:ate_it/views/auth/forgot_password_view.dart';
+import 'package:ate_it/views/auth/register_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../controllers/auth_controller.dart';
-import '../../routes/app_routes.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AuthController controller = Get.put(AuthController());
+    final AuthController c = Get.put(AuthController());
 
     return Scaffold(
       body: SafeArea(
@@ -21,7 +22,6 @@ class LoginView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Logo/App Name
                   Icon(Icons.restaurant_menu,
                           size: 80, color: Theme.of(context).primaryColor)
                       .animate()
@@ -37,9 +37,8 @@ class LoginView extends StatelessWidget {
                   ).animate().fadeIn().slideY(begin: 0.3, duration: 500.ms),
                   const SizedBox(height: 40),
 
-                  // Fields
                   TextField(
-                    controller: controller.loginUsernameController,
+                    controller: c.loginUsernameController,
                     decoration: const InputDecoration(
                       labelText: 'Username',
                       prefixIcon: Icon(Icons.person_outline),
@@ -47,7 +46,7 @@ class LoginView extends StatelessWidget {
                   ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.2),
                   const SizedBox(height: 16),
                   TextField(
-                    controller: controller.loginPasswordController,
+                    controller: c.loginPasswordController,
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: 'Password',
@@ -55,11 +54,10 @@ class LoginView extends StatelessWidget {
                     ),
                   ).animate().fadeIn(delay: 300.ms).slideX(begin: 0.2),
 
-                  // Forgot Password
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD),
+                      onPressed: () => Get.to(()=>ForgotPasswordView()),
                       child: const Text('Forgot Password?'),
                     ),
                   ).animate().fadeIn(delay: 400.ms),
@@ -67,10 +65,8 @@ class LoginView extends StatelessWidget {
 
                   // Login Button
                   Obx(() => ElevatedButton(
-                        onPressed: controller.isLoading.value
-                            ? null
-                            : controller.login,
-                        child: controller.isLoading.value
+                        onPressed: c.login,
+                        child: c.isLoading.value
                             ? const CircularProgressIndicator(
                                 color: Colors.white)
                             : const Text('Login'),
@@ -84,7 +80,7 @@ class LoginView extends StatelessWidget {
                     children: [
                       const Text("Don't have an account?"),
                       TextButton(
-                        onPressed: () => Get.toNamed(Routes.REGISTER),
+                        onPressed: () => Get.to(()=>RegisterView()),
                         child: const Text('Create Account'),
                       ),
                     ],

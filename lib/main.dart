@@ -1,9 +1,9 @@
+import 'package:ate_it/views/auth/login_view.dart';
+import 'package:ate_it/views/auth/onboarding_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'services/app_theme.dart';
-import 'routes/app_pages.dart';
-import 'routes/app_routes.dart';
 
 void main() async {
   await GetStorage.init();
@@ -22,8 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'AteIt',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: hasSeenOnboarding ? AppPages.INITIAL : Routes.ONBOARDING,
-      getPages: AppPages.routes,
+      home: hasSeenOnboarding ? LoginView() : OnboardingView(),
       defaultTransition: Transition.cupertino,
     );
   }

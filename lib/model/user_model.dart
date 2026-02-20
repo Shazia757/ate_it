@@ -6,10 +6,10 @@ class User {
   String? email;
   String? role;
   String? phoneNumber;
-  String? state;
-  String? district;
-  String? city;
-  String? pincode;
+  // String? state;
+  // String? district;
+  // String? city;
+  // String? pincode;
 
   User({
     this.id,
@@ -19,10 +19,10 @@ class User {
     this.firstName,
     this.lastName,
     this.phoneNumber,
-    this.city,
-    this.district,
-    this.pincode,
-    this.state,
+    // this.city,
+    // this.district,
+    // this.pincode,
+    // this.state,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -32,10 +32,10 @@ class User {
         firstName: json['first_name'],
         lastName: json['last_name'],
         email: json['email'],
-        state: json['state'],
-        district: json['district'],
-        city: json['city'],
-        pincode: json['pincode'],
+        // state: json['state'],
+        // district: json['district'],
+        // city: json['city'],
+        // pincode: json['pincode'],
         role: json['role'],
         phoneNumber: json['phone_number']);
   }
@@ -46,10 +46,10 @@ class User {
       'email': email,
       'role': role,
       'phone_number': phoneNumber,
-      'state': state,
-      'city': city,
-      'district': district,
-      'pincode': pincode,
+      // 'state': state,
+      // 'city': city,
+      // 'district': district,
+      // 'pincode': pincode,
     };
   }
 }

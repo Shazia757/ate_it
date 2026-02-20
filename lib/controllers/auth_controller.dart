@@ -1,13 +1,13 @@
 import 'package:ate_it/model/user_model.dart';
 import 'package:ate_it/services/api.dart';
 import 'package:ate_it/services/local_storage.dart';
+import 'package:ate_it/views/auth/login_view.dart';
+import 'package:ate_it/views/main_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../routes/app_routes.dart';
 
 class AuthController extends GetxController {
-  final ApiService _apiService = Get.put(ApiService());
 
   var isLoading = false.obs;
   var errorMessage = ''.obs;
@@ -22,10 +22,6 @@ class AuthController extends GetxController {
   final regUserNameController = TextEditingController();
   final regPhoneController = TextEditingController();
   final regEmailController = TextEditingController();
-  final regStateController = TextEditingController();
-  final regDistrictController = TextEditingController();
-  final regCityController = TextEditingController();
-  final regPincodeController = TextEditingController();
   final regPasswordController = TextEditingController();
   final regConfirmPasswordController = TextEditingController();
 
@@ -51,7 +47,7 @@ class AuthController extends GetxController {
     }
     isLoading.value = true;
 
-    await _apiService
+    await ApiService()
         .login(loginUsernameController.text, loginPasswordController.text)
         .then(
       (response) async {
@@ -60,7 +56,7 @@ class AuthController extends GetxController {
           await LocalStorage().writePassword(loginPasswordController.text);
 
           Get.snackbar('Login success', 'Welcome ${response?.data?.username}');
-          Get.offAllNamed(Routes.MAIN);
+          Get.offAll(MainView());
         } else {
           errorMessage.value = 'Failed to login!';
           Get.snackbar('Error', 'Failed to login!');
@@ -76,10 +72,6 @@ class AuthController extends GetxController {
         regUserNameController.text.isEmpty ||
         regPhoneController.text.isEmpty ||
         regEmailController.text.isEmpty ||
-        regStateController.text.isEmpty ||
-        regDistrictController.text.isEmpty ||
-        regCityController.text.isEmpty ||
-        regPincodeController.text.isEmpty ||
         regPasswordController.text.isEmpty ||
         regConfirmPasswordController.text.isEmpty) {
       Get.snackbar('Error', 'Please fill out all fields!');
@@ -103,7 +95,7 @@ class AuthController extends GetxController {
     }
     isLoading.value = true;
 
-    _apiService.register({
+    ApiService().register({
       'username': regUserNameController.text,
       'first_name': regUserNameController.text,
       'last_name': regUserNameController.text,
@@ -111,21 +103,12 @@ class AuthController extends GetxController {
       'password': regPasswordController.text,
       'role': 'CUSTOMER',
       'phone_number': regPhoneController.text,
-      'state': regStateController.text,
-      'district': regDistrictController.text,
-      'city': regCityController.text,
-      'pincode': regPincodeController.text,
       'confirm_pass': regConfirmPasswordController.text
     }).then(
       (response) async {
         if (response?.status == true) {
           await LocalStorage().writeUser(response?.data ?? User());
-          await LocalStorage().writeUser(User(
-              state: regStateController.text,
-              city: regCityController.text,
-              district: regDistrictController.text,
-              pincode: regPincodeController.text));
-          Get.offAllNamed(Routes.LOGIN);
+          Get.offAll(LoginView());
         } else {
           errorMessage.value = 'Failed to register!';
           Get.snackbar('Error', 'Failed to register!');
@@ -141,38 +124,19 @@ class AuthController extends GetxController {
           backgroundColor: Colors.redAccent, colorText: Colors.white);
       return;
     }
-
     isLoading.value = true;
-    await _apiService.sendOtp(forgotPhoneController.text);
+    await ApiService().sendOtp(forgotPhoneController.text);
     isLoading.value = false;
 
     Get.defaultDialog(
       title: "OTP Sent",
       middleText: "An OTP has been sent to your registered mobile number.",
       onConfirm: () {
-        Get.back(); // close dialog
-        Get.back(); // go back to login
+        Get.back();
+        Get.back();
       },
       textConfirm: "OK",
       confirmTextColor: Colors.white,
     );
-  }
-
-  @override
-  void onClose() {
-    // loginUsernameController.dispose();
-    // loginPasswordController.dispose();
-    // regFirstNameController.dispose();
-    // regLastNameController.dispose();
-    // regUserNameController.dispose();
-    // regEmailController.dispose();
-    // regStateController.dispose();
-    // regDistrictController.dispose();
-    // regCityController.dispose();
-    // regPincodeController.dispose();
-    // regPasswordController.dispose();
-    // regConfirmPasswordController.dispose();
-
-    super.onClose();
   }
 }

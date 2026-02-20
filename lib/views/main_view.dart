@@ -18,11 +18,11 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MainController controller = Get.put(MainController());
+    final MainController c = Get.put(MainController());
 
     return Scaffold(
       body: Obx(() => IndexedStack(
-            index: controller.currentIndex.value,
+            index: c.currentIndex.value,
             children: const [
               HomeView(),
               OrdersView(),
@@ -31,8 +31,8 @@ class MainView extends StatelessWidget {
             ],
           )),
       bottomNavigationBar: Obx(() => BottomNavigationBar(
-            currentIndex: controller.currentIndex.value,
-            onTap: controller.changePage,
+            currentIndex: c.currentIndex.value,
+            onTap: c.changePage,
             selectedItemColor: Theme.of(context).primaryColor,
             unselectedItemColor: Colors.grey,
             showUnselectedLabels: true,

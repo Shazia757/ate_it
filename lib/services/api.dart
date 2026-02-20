@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ate_it/model/auth_model.dart';
-import 'package:ate_it/model/location_model.dart';
 import 'package:ate_it/model/order_model.dart';
 import 'package:ate_it/model/restaurant_model.dart';
 import 'package:ate_it/model/user_model.dart';
+import 'package:ate_it/model/wallet_model.dart';
 import 'package:ate_it/services/local_storage.dart';
 import 'package:ate_it/services/urls.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
@@ -100,40 +100,40 @@ class ApiService extends GetxService {
     return null;
   }
 
-  //------------------Locations---------------------------//
-  Future<List<StateModel>> getStates() async {
-    try {
-      final response = await http.get(Uri.parse(Urls.states));
-      if (checkValidations(response.body)) {
-        final json = jsonDecode(response.body);
-        final List data = json['data'];
-        return data.map((e) => StateModel.fromJson(e)).toList();
-      }
-      return [];
-    } catch (e) {
-      return [];
-    }
-  }
+  // //------------------Locations---------------------------//
+  // Future<List<StateModel>> getStates() async {
+  //   try {
+  //     final response = await http.get(Uri.parse(Urls.states));
+  //     if (checkValidations(response.body)) {
+  //       final json = jsonDecode(response.body);
+  //       final List data = json['data'];
+  //       return data.map((e) => StateModel.fromJson(e)).toList();
+  //     }
+  //     return [];
+  //   } catch (e) {
+  //     return [];
+  //   }
+  // }
 
-  Future<List<DistrictModel>> getDistricts(int stateId) async {
-    try {
-      final response = await http.get(Uri.parse(Urls.districts(stateId)));
-      if (checkValidations(response.body)) {
-        final json = jsonDecode(response.body);
-        final List data = json['data'];
-        return data.map((e) => DistrictModel.fromJson(e)).toList();
-      }
-      return [];
-    } catch (e) {
-      return [];
-    }
-  }
+  // Future<List<DistrictModel>> getDistricts(int stateId) async {
+  //   try {
+  //     final response = await http.get(Uri.parse(Urls.districts(stateId)));
+  //     if (checkValidations(response.body)) {
+  //       final json = jsonDecode(response.body);
+  //       final List data = json['data'];
+  //       return data.map((e) => DistrictModel.fromJson(e)).toList();
+  //     }
+  //     return [];
+  //   } catch (e) {
+  //     return [];
+  //   }
+  // }
 
   //------------------Get restaturants---------------------------//
 
   Future<RestaurantResponse?> getRestaurants() async {
     try {
-      log("restaurent api workind");
+      log("restaurent api working");
       log(generateHeader().toString());
       final response = await http
           .get(Uri.parse(Urls.restaurants), headers: generateHeader())
@@ -165,6 +165,7 @@ class ApiService extends GetxService {
     } catch (e) {
       log('Api error:$e');
     }
+    return null;
   }
 
   Future<OrderModel?> createOrder(Map<String, dynamic> orderData) async {
@@ -189,19 +190,70 @@ class ApiService extends GetxService {
     }
   }
 
-  Future<List<OrderModel>> getOrders() async {
-    final response = await http.get(Uri.parse(Urls.orders));
-    if (checkValidations(response.body)) {
-      final json = jsonDecode(response.body);
-      final List data = json['data'];
-      return data.map((e) => OrderModel.fromJson(e)).toList();
+  Future<OrderResponse?> getOrders() async {
+    try {
+      log('Order function is working ');
+      final response = await http
+          .get(Uri.parse(Urls.orders), headers: generateHeader())
+          .timeout(Duration(seconds: 60));
+      if (checkValidations(response.body)) {
+        final json = jsonDecode(response.body);
+        return OrderResponse.fromJson(json);
+      }
+    } catch (e) {
+      log('Order api error:$e');
     }
-    return [];
+    return null;
   }
 
-  Future<Map<String, dynamic>> getWalletData() async {
-    // Mock for now
-    await Future.delayed(const Duration(seconds: 1));
-    return {'balance': 0.0, 'transactions': [], 'topupRequests': []};
+  Future<WalletResponse?> getWalletData() async {
+    final response = await http.get(Uri.parse(Urls.sendTopupRequest), headers: {
+      'Content-Type': 'application/json'
+    }).timeout(Duration(seconds: 60));
+
+    if (checkValidations(response.body)) {
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return WalletResponse.fromJson(responseJson);
+    } else {
+      log('Failed to fatch data: ${response.body}');
+    }
+    return null;
   }
+
+  Future<WalletResponse?> sendTopupRequest(Map<String, dynamic> data) async {
+    final response = await http
+        .post(Uri.parse(Urls.sendTopupRequest),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(data))
+        .timeout(Duration(seconds: 60));
+
+    if (checkValidations(response.body)) {
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return WalletResponse.fromJson(responseJson);
+    } else {
+      log('Failed to topup: ${response.body}');
+    }
+    return null;
+  }
+
+   //------------------Logout---------------------------//
+
+  Future<LoginResponse?> logout() async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse(Urls.logout),
+            body: jsonEncode({}),
+            headers: generateHeader(),
+          )
+          .timeout(Duration(seconds: 60));
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return LoginResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Api error during logout:$e');
+    }
+    return null;
+  }
+
 }

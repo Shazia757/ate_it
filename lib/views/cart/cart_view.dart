@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CartView extends StatelessWidget {
-  const CartView({Key? key}) : super(key: key);
+  const CartView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final CartController controller = Get.put(CartController());
+    final CartController c = Get.put(CartController());
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Cart'),
       ),
       body: Obx(() {
-        if (controller.cartItems.isEmpty) {
+        if (c.cartItems.isEmpty) {
           return const Center(
             child: Text(
               'Your cart is empty',
@@ -31,7 +31,7 @@ class CartView extends StatelessWidget {
                 children: [
                   const Icon(Icons.store, color: Colors.teal),
                   const SizedBox(width: 8),
-                  Text(controller.restaurantName.value,
+                  Text(c.restaurantName.value,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
                 ],
@@ -39,10 +39,10 @@ class CartView extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: controller.cartItems.length,
+                itemCount: c.cartItems.length,
                 itemBuilder: (context, index) {
-                  final item = controller.cartItems.keys.elementAt(index);
-                  final quantity = controller.cartItems[item];
+                  final item = c.cartItems.keys.elementAt(index);
+                  final quantity = c.cartItems[item];
                   return Card(
                     margin:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -54,17 +54,17 @@ class CartView extends StatelessWidget {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.remove_circle_outline),
-                            onPressed: () => controller.removeFromCart(item),
+                            onPressed: () => c.removeFromCart(item),
                           ),
                           Text('$quantity',
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           IconButton(
                             icon: const Icon(Icons.add_circle_outline),
-                            onPressed: () => controller.addToCart(
+                            onPressed: () => c.addToCart(
                                 item,
-                                controller.restaurantId.value,
-                                controller.restaurantName.value),
+                                c.restaurantId.value,
+                                c.restaurantName.value),
                           ),
                         ],
                       ),
@@ -79,7 +79,7 @@ class CartView extends StatelessWidget {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
+                    color: Colors.grey.withValues(alpha: 0.2),
                     blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),
@@ -93,7 +93,7 @@ class CartView extends StatelessWidget {
                       const Text('Total Amount:',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold)),
-                      Text('₹${controller.totalAmount.toStringAsFixed(2)}',
+                      Text('₹${c.totalAmount.toStringAsFixed(2)}',
                           style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -109,7 +109,7 @@ class CartView extends StatelessWidget {
                         backgroundColor: Colors.teal,
                         foregroundColor: Colors.white,
                       ),
-                      onPressed: () => controller.checkout(),
+                      onPressed: () => c.checkout(),
                       child: const Text('Pay & Order',
                           style: TextStyle(fontSize: 18)),
                     ),

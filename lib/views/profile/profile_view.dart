@@ -36,30 +36,32 @@ class ProfileView extends StatelessWidget {
               _buildField('Phone', controller.phoneController, isEditing,
                   isPhone: true),
               _buildField('Email', controller.emailController, isEditing),
-              Row(
-                children: [
-                  Expanded(
-                      child: _buildField(
-                          'State', controller.stateController, isEditing)),
-                  const SizedBox(width: 16),
-                  Expanded(
-                      child: _buildField('District',
-                          controller.districtController, isEditing)),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                      child: _buildField(
-                          'City', controller.cityController, isEditing)),
-                  const SizedBox(width: 16),
-                  Expanded(
-                      child: _buildField(
-                          'Pincode', controller.pincodeController, isEditing)),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //         child: _buildField(
+              //             'State', controller.stateController, isEditing)),
+              //     const SizedBox(width: 16),
+              //     Expanded(
+              //         child: _buildField('District',
+              //             controller.districtController, isEditing)),
+              //   ],
+              // ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //         child: _buildField(
+              //             'City', controller.cityController, isEditing)),
+              //     const SizedBox(width: 16),
+              //     Expanded(
+              //         child: _buildField(
+              //             'Pincode', controller.pincodeController, isEditing)),
+              //   ],
+              // ),
               ElevatedButton(
-                onPressed: () => Get.offAll(LoginView()),
+                onPressed: () {
+                  Get.offAll(LoginView());
+                },
                 child: const Text('Logout'),
               ),
             ],

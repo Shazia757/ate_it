@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 
-class RegisterView extends GetView<AuthController> {
+class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
 
   @override
@@ -51,43 +51,6 @@ class RegisterView extends GetView<AuthController> {
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                     labelText: 'Email', prefixIcon: Icon(Icons.email)),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: c.regStateController,
-                      decoration: const InputDecoration(labelText: 'State'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextField(
-                      controller: c.regDistrictController,
-                      decoration: const InputDecoration(labelText: 'District'),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: c.regCityController,
-                      decoration: const InputDecoration(labelText: 'City'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextField(
-                      controller: c.regPincodeController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Pincode'),
-                    ),
-                  ),
-                ],
               ),
               const SizedBox(height: 16),
               TextField(

@@ -7,14 +7,16 @@ class Urls {
   static const String logout = '$base/auth/auth/logout/';
   static const String profile = '$base/auth/auth/profile/';
 
-  // Location
-  static const String states = '$base/auth/locations/states/';
-  static String districts(int stateId) =>
-      '$base/auth/locations/districts/$stateId/';
+// Location
+//   static const String states =
+//       'https://india-location-hub.in/api/locations/states';
+//   static String districts(int stateId) =>
+//       '$base/auth/locations/districts/$stateId/';
 
   // Customer
   static const String restaurants = '$base/customer/restaurants/';
   static String restaurantMenu(int id) =>
       '$base/customer/restaurants/$id/menu/';
   static const String orders = '$base/customer/orders/';
+  static const String sendTopupRequest = '$base/customer/wallet/topup/';
 }

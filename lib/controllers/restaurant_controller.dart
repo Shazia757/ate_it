@@ -5,11 +5,10 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RestaurantController extends GetxController {
-  final ApiService _apiService = Get.find<ApiService>();
-  final CartController _cartController = Get.put(CartController());
+  final CartController c = Get.put(CartController());
 
   var meals = <FoodItem>[].obs;
-  var isLoading = true.obs;
+  var isLoading = false.obs;
   var currentRestaurantId = (-1).obs;
   var currentRestaurantName = ''.obs;
 
@@ -26,8 +25,7 @@ class RestaurantController extends GetxController {
   void fetchMenu(int restaurantId) {
     currentRestaurantId.value = restaurantId;
     try {
-      isLoading.value = true;
-      _apiService.getRestaurantMenu(restaurantId).then(
+      ApiService().getRestaurantMenu(restaurantId).then(
         (value) {
           meals.assignAll(value?.data ?? []);
         },
@@ -40,7 +38,7 @@ class RestaurantController extends GetxController {
   }
 
   void addToCart(FoodItem meal) {
-    _cartController.addToCart(
+    c.addToCart(
         meal, currentRestaurantId.value, currentRestaurantName.value);
   }
 

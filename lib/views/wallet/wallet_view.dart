@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/wallet_controller.dart';
-import '../../routes/app_routes.dart';
 
 class WalletView extends StatelessWidget {
   const WalletView({super.key});
@@ -51,21 +50,20 @@ class WalletView extends StatelessWidget {
                     child: _ActionButton(
                         icon: Icons.add_card,
                         label: 'Topup',
-                        onTap: () => Get.toNamed(Routes.WALLET_TOPUP))),
+                        onTap: () => Get.to(() => TopupView()))),
                 const SizedBox(width: 16),
                 Expanded(
                     child: _ActionButton(
                         icon: Icons.history,
                         label: 'Requests',
-                        onTap: () =>
-                            Get.toNamed(Routes.WALLET_TOPUP_REQUESTS))),
+                        onTap: () => Get.to(() => TopupRequestsView()))),
               ],
             ),
             const SizedBox(height: 16),
             _ActionButton(
                 icon: Icons.list_alt,
                 label: 'View Transactions',
-                onTap: () => Get.toNamed(Routes.WALLET_TRANSACTIONS),
+                onTap: () => Get.to(() => TransactionsView()),
                 isFullWidth: true),
           ],
         );
@@ -227,24 +225,24 @@ class TransactionsView extends StatelessWidget {
       body: Obx(() => ListView.builder(
             itemCount: controller.transactions.length,
             itemBuilder: (context, index) {
-              final tx = controller.transactions[index];
-              final isCredit = tx['type'] == 'Credit';
+              // final tx = controller.transactions[index];
+              // final isCredit = tx['type'] == 'Credit';
 
-              return ListTile(
-                leading: Icon(
-                  isCredit ? Icons.arrow_downward : Icons.arrow_upward,
-                  color: isCredit ? Colors.green : Colors.red,
-                ),
-                title: Text(tx['desc']??''),
-                subtitle: Text(tx['date']),
-                trailing: Text(
-                  '${isCredit ? "+" : "-"} ₹${tx['amount']}',
-                  style: TextStyle(
-                    color: isCredit ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              );
+              // return ListTile(
+              //     leading: Icon(
+              //       isCredit ? Icons.arrow_downward : Icons.arrow_upward,
+              //       color: isCredit ? Colors.green : Colors.red,
+              //     ),
+              //     title: Text(tx['desc']??''),
+              //     subtitle: Text(tx['date']),
+              //     trailing: Text(
+              //       '${isCredit ? "+" : "-"} ₹${tx['amount']}',
+              //       style: TextStyle(
+              //         color: isCredit ? Colors.green : Colors.red,
+              //         fontWeight: FontWeight.bold,
+              //       ),
+              //     ),
+              //   );
             },
           )),
     );

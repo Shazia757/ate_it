@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 
-class ForgotPasswordView extends GetView<AuthController> {
+class ForgotPasswordView extends StatelessWidget {
   const ForgotPasswordView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AuthController c = Get.put(AuthController());
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('AteIt - Forgot Password'),
@@ -22,7 +24,7 @@ class ForgotPasswordView extends GetView<AuthController> {
             ),
             const SizedBox(height: 24),
             TextField(
-              controller: controller.forgotPhoneController,
+              controller: c.forgotPhoneController,
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
                 labelText: 'Mobile Number',
@@ -32,8 +34,8 @@ class ForgotPasswordView extends GetView<AuthController> {
             const SizedBox(height: 24),
             Obx(() => ElevatedButton(
                   onPressed:
-                      controller.isLoading.value ? null : controller.sendOtp,
-                  child: controller.isLoading.value
+                      c.isLoading.value ? null : c.sendOtp,
+                  child: c.isLoading.value
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text('Send OTP'),
                 )),
