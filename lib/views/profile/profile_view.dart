@@ -1,4 +1,3 @@
-import 'package:ate_it/views/auth/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/profile_controller.dart';

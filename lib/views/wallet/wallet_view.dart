@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/wallet_controller.dart';
@@ -173,39 +171,6 @@ class TopupView extends StatelessWidget {
     );
   }
 
-  void _showPaymentDialog(
-      BuildContext context, WalletController controller, double amount) {
-    Get.dialog(
-      Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Payment Gateway',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              const SizedBox(height: 20),
-              const CircularProgressIndicator(),
-              const SizedBox(height: 20),
-              const Text('Processing Payment...',
-                  style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 10),
-              Text('Amount: ₹$amount',
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
-      ),
-      barrierDismissible: false,
-    );
-
-    // Simulate network/payment delay
-    Future.delayed(const Duration(seconds: 3), () {
-      Get.back(); // Close processing dialog
-      controller.requestTopup(amount); // Proceed with request
-    });
-  }
 }
 
 class TopupRequestsView extends StatelessWidget {
@@ -245,38 +210,38 @@ class TopupRequestsView extends StatelessWidget {
   }
 }
 
-class TransactionsView extends StatelessWidget {
-  const TransactionsView({super.key});
+// class TransactionsView extends StatelessWidget {
+//   const TransactionsView({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final controller = Get.find<WalletController>();
+//   @override
+//   Widget build(BuildContext context) {
+//     final controller = Get.find<WalletController>();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Transactions')),
-      body: Obx(() => ListView.builder(
-            itemCount: controller.transactions.length,
-            itemBuilder: (context, index) {
-              // final tx = controller.transactions[index];
-              // final isCredit = tx['type'] == 'Credit';
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('Transactions')),
+//       body: Obx(() => ListView.builder(
+//             itemCount: controller.transactions.length,
+//             itemBuilder: (context, index) {
+//               // final tx = controller.transactions[index];
+//               // final isCredit = tx['type'] == 'Credit';
 
-              // return ListTile(
-              //     leading: Icon(
-              //       isCredit ? Icons.arrow_downward : Icons.arrow_upward,
-              //       color: isCredit ? Colors.green : Colors.red,
-              //     ),
-              //     title: Text(tx['desc']??''),
-              //     subtitle: Text(tx['date']),
-              //     trailing: Text(
-              //       '${isCredit ? "+" : "-"} ₹${tx['amount']}',
-              //       style: TextStyle(
-              //         color: isCredit ? Colors.green : Colors.red,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     ),
-              //   );
-            },
-          )),
-    );
-  }
-}
+//               // return ListTile(
+//               //     leading: Icon(
+//               //       isCredit ? Icons.arrow_downward : Icons.arrow_upward,
+//               //       color: isCredit ? Colors.green : Colors.red,
+//               //     ),
+//               //     title: Text(tx['desc']??''),
+//               //     subtitle: Text(tx['date']),
+//               //     trailing: Text(
+//               //       '${isCredit ? "+" : "-"} ₹${tx['amount']}',
+//               //       style: TextStyle(
+//               //         color: isCredit ? Colors.green : Colors.red,
+//               //         fontWeight: FontWeight.bold,
+//               //       ),
+//               //     ),
+//               //   );
+//             },
+//           )),
+//     );
+//   }
+// }

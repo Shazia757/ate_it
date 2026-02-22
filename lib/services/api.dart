@@ -6,16 +6,11 @@ import 'package:ate_it/model/order_model.dart';
 import 'package:ate_it/model/restaurant_model.dart';
 import 'package:ate_it/model/user_model.dart';
 import 'package:ate_it/model/wallet_model.dart';
-import 'package:ate_it/services/local_storage.dart';
 import 'package:ate_it/services/urls.dart';
 import 'package:ate_it/services/utils.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 import 'package:http/http.dart' as http;
 
-class ApiService extends GetxService {
-  
- 
-
+class ApiService {
   //------------------Auth---------------------------//
 
   Future<LoginResponse?> login(String username, String password) async {
@@ -58,14 +53,8 @@ class ApiService extends GetxService {
   }
 
   Future<bool> sendOtp(String mobile) async {
-    // Mock
     await Future.delayed(const Duration(seconds: 1));
     return true;
-  }
-
-  Future<User?> getProfile() async {
-    // TODO: Add auth headers
-    return null;
   }
 
   Future<GeneralResponse?> updateProfile(Map<String, dynamic> data) async {
@@ -114,7 +103,7 @@ class ApiService extends GetxService {
   //   }
   // }
 
-  //------------------Get restaturants---------------------------//
+  //------------------Get restaurants---------------------------//
 
   Future<RestaurantResponse?> getRestaurants() async {
     try {
@@ -130,10 +119,13 @@ class ApiService extends GetxService {
         return RestaurantResponse.fromJson(responseJson);
       }
     } catch (e) {
+      checkConnectivity();
       log('Api error fetching restaurants: $e');
     }
     return null;
   }
+
+  //------------------Get restaurant Menu---------------------------//
 
   Future<MenuResponse?> getRestaurantMenu(int id) async {
     try {
@@ -148,10 +140,13 @@ class ApiService extends GetxService {
         return MenuResponse.fromJson(json);
       }
     } catch (e) {
+      checkConnectivity();
       log('Api error:$e');
     }
     return null;
   }
+
+  //--------------------Create Order---------------------------//
 
   Future<OrderModel?> createOrder(Map<String, dynamic> orderData) async {
     try {
@@ -169,11 +164,13 @@ class ApiService extends GetxService {
             restaurantName: null,
             createdAt: null);
       }
-      return null;
     } catch (e) {
-      return null;
+      checkConnectivity();
     }
+    return null;
   }
+
+  //--------------------Get Order---------------------------//
 
   Future<OrderResponse?> getOrders() async {
     try {
@@ -187,49 +184,62 @@ class ApiService extends GetxService {
       }
     } catch (e) {
       log('Order api error:$e');
+      checkConnectivity();
     }
     return null;
   }
 
   Future<WalletResponse?> getWalletData() async {
-    final response = await http
-        .get(Uri.parse(Urls.balance), headers: generateHeader())
-        .timeout(Duration(seconds: 60));
+    try {
+      final response = await http
+          .get(Uri.parse(Urls.balance), headers: generateHeader())
+          .timeout(Duration(seconds: 60));
 
-    if (checkValidations(response.body)) {
-      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-      return WalletResponse.fromJson(responseJson);
-    } else {
-      log('Failed to fetch data: ${response.body}');
+      if (checkValidations(response.body)) {
+        final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+        return WalletResponse.fromJson(responseJson);
+      } else {
+        log('Failed to fetch data: ${response.body}');
+      }
+    } catch (e) {
+      checkConnectivity();
     }
     return null;
   }
 
   Future<TopupResponse?> getTopupRequests() async {
-    final response = await http
-        .get(Uri.parse(Urls.sendTopupRequest), headers: generateHeader())
-        .timeout(Duration(seconds: 60));
+    try {
+      final response = await http
+          .get(Uri.parse(Urls.sendTopupRequest), headers: generateHeader())
+          .timeout(Duration(seconds: 60));
 
-    if (checkValidations(response.body)) {
-      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-      return TopupResponse.fromJson(responseJson);
-    } else {
-      log('Failed to fetch data: ${response.body}');
+      if (checkValidations(response.body)) {
+        final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+        return TopupResponse.fromJson(responseJson);
+      } else {
+        log('Failed to fetch data: ${response.body}');
+      }
+    } catch (e) {
+      checkConnectivity();
     }
     return null;
   }
 
   Future<WalletResponse?> sendTopupRequest(Map<String, dynamic> data) async {
-    final response = await http
-        .post(Uri.parse(Urls.sendTopupRequest),
-            headers: generateHeader(), body: jsonEncode(data))
-        .timeout(Duration(seconds: 60));
+    try {
+      final response = await http
+          .post(Uri.parse(Urls.sendTopupRequest),
+              headers: generateHeader(), body: jsonEncode(data))
+          .timeout(Duration(seconds: 60));
 
-    if (checkValidations(response.body)) {
-      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-      return WalletResponse.fromJson(responseJson);
-    } else {
-      log('Failed to topup: ${response.body}');
+      if (checkValidations(response.body)) {
+        final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+        return WalletResponse.fromJson(responseJson);
+      } else {
+        log('Failed to topup: ${response.body}');
+      }
+    } catch (e) {
+      checkConnectivity();
     }
     return null;
   }
@@ -250,6 +260,7 @@ class ApiService extends GetxService {
       return LoginResponse.fromJson(responseJson);
     } catch (e) {
       log('Api error during logout:$e');
+      checkConnectivity();
     }
     return null;
   }
@@ -268,6 +279,7 @@ class ApiService extends GetxService {
       }
     } catch (e) {
       log('Api error fetching issues: $e');
+      checkConnectivity();
     }
     return null;
   }
@@ -283,6 +295,7 @@ class ApiService extends GetxService {
       return IssueResponse.fromJson(responseJson);
     } catch (e) {
       log('Api error reporting issue: $e');
+      checkConnectivity();
     }
     return null;
   }
@@ -297,6 +310,7 @@ class ApiService extends GetxService {
       return checkValidations(response.body);
     } catch (e) {
       log('Api error updating issue: $e');
+      checkConnectivity();
       return false;
     }
   }
@@ -310,6 +324,7 @@ class ApiService extends GetxService {
       return checkValidations(response.body);
     } catch (e) {
       log('Api error deleting issue: $e');
+      checkConnectivity();
       return false;
     }
   }
