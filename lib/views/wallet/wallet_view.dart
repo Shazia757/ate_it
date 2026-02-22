@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/wallet_controller.dart';
@@ -21,7 +23,7 @@ class WalletView extends StatelessWidget {
         }
 
         return ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
           children: [
             // Balance Card
             Card(
@@ -44,26 +46,21 @@ class WalletView extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Actions
-            Row(
-              children: [
-                Expanded(
-                    child: _ActionButton(
-                        icon: Icons.add_card,
-                        label: 'Topup',
-                        onTap: () => Get.to(() => TopupView()))),
-                const SizedBox(width: 16),
-                Expanded(
-                    child: _ActionButton(
-                        icon: Icons.history,
-                        label: 'Requests',
-                        onTap: () => Get.to(() => TopupRequestsView()))),
-              ],
-            ),
             const SizedBox(height: 16),
             _ActionButton(
-                icon: Icons.list_alt,
-                label: 'View Transactions',
-                onTap: () => Get.to(() => TransactionsView()),
+                icon: Icons.add_card,
+                label: 'Topup',
+                onTap: () => Get.to(() => TopupView()),
+                isFullWidth: true),
+            const SizedBox(height: 16),
+            _ActionButton(
+                icon: Icons.history,
+                label: 'Requests',
+                onTap: () {
+                  controller.getTopupRequests();
+
+                  Get.to(() => TopupRequestsView());
+                },
                 isFullWidth: true),
           ],
         );
@@ -134,14 +131,40 @@ class TopupView extends StatelessWidget {
                     onPressed: controller.isLoading.value
                         ? null
                         : () {
-                            if (amountController.text.isNotEmpty) {
-                              _showDummyPaymentDialog(context, controller,
-                                  double.parse(amountController.text));
+                            if (amountController.text.isEmpty) {
+                              Get.snackbar(
+                                  "Error", "Please specify the amount");
+                            } else {
+                              showDialog(
+                                context: Get.context!,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    title: Text('Request Topup'),
+                                    content: Text(
+                                        "Are you sure you want to topup for ₹${amountController.text}?"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () => Get.back(),
+                                          child: Text("Cancel")),
+                                      TextButton(
+                                        onPressed: () => controller
+                                            .requestTopup(double.parse(
+                                                amountController.text)),
+                                        child: Obx(() =>
+                                            (controller.isLoading.value)
+                                                ? CircularProgressIndicator()
+                                                : Text("Confirm")),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                             }
                           },
-                    child: controller.isLoading.value
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text('Proceed to Pay'),
+                    child: const Text('Proceed to Pay'),
                   )),
             ),
           ],
@@ -150,7 +173,7 @@ class TopupView extends StatelessWidget {
     );
   }
 
-  void _showDummyPaymentDialog(
+  void _showPaymentDialog(
       BuildContext context, WalletController controller, double amount) {
     Get.dialog(
       Dialog(
@@ -160,7 +183,7 @@ class TopupView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Payment Gateway (Mock)',
+              const Text('Payment Gateway',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               const SizedBox(height: 20),
               const CircularProgressIndicator(),
@@ -194,20 +217,29 @@ class TopupRequestsView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Topup Requests')),
-      body: Obx(() => ListView.builder(
-            itemCount: controller.topupRequests.length,
-            itemBuilder: (context, index) {
-              final req = controller.topupRequests[index];
-              return ListTile(
-                title: Text('₹${req['amount']}'),
-                subtitle: Text(req['date']),
-                trailing: Chip(
-                  label: Text(req['status']),
-                  backgroundColor:
-                      req['status'] == 'Pending' ? Colors.orange : Colors.green,
-                ),
-              );
-            },
+      body: Obx(() => RefreshIndicator(
+            onRefresh: () async => controller.getTopupRequests(),
+            child: controller.isLoading.isTrue
+                ? Center(child: CircularProgressIndicator())
+                : controller.topupRequestsList.isEmpty
+                    ? Center(child: Text("No requests available"))
+                    : ListView.builder(
+                        itemCount: controller.topupRequestsList.length,
+                        itemBuilder: (context, index) {
+                          final req = controller.topupRequestsList[index];
+                          return ListTile(
+                            title: Text('₹${req.amount}'),
+                            subtitle: Text(req.createdAt.toString()),
+                            trailing: Chip(
+                              label: Text(req.status.toString()),
+                              backgroundColor:
+                                  req.status.toString() == 'PENDING'
+                                      ? Colors.orange
+                                      : Colors.green,
+                            ),
+                          );
+                        },
+                      ),
           )),
     );
   }

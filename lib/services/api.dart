@@ -1,36 +1,21 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ate_it/model/auth_model.dart';
+import 'package:ate_it/model/issue_model.dart';
 import 'package:ate_it/model/order_model.dart';
 import 'package:ate_it/model/restaurant_model.dart';
 import 'package:ate_it/model/user_model.dart';
 import 'package:ate_it/model/wallet_model.dart';
 import 'package:ate_it/services/local_storage.dart';
 import 'package:ate_it/services/urls.dart';
+import 'package:ate_it/services/utils.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService extends GetxService {
-  // Helper validation
-  bool checkValidations(String response) {
-    if (response.contains('An error occured')) {
-      return false;
-    }
-    return true;
-  }
+  
+ 
 
-  Map<String, String> generateHeader() {
-    final String credentials =
-        '${LocalStorage().readUser().username}:${LocalStorage().readPass()}';
-    final String encoded = base64Encode(utf8.encode(credentials));
-    final String basicAuth = 'Basic $encoded';
-
-    return {
-      'Content-Type': 'application/json',
-      "Authorization": basicAuth,
-      "Credentials": credentials
-    };
-  }
   //------------------Auth---------------------------//
 
   Future<LoginResponse?> login(String username, String password) async {
@@ -207,15 +192,29 @@ class ApiService extends GetxService {
   }
 
   Future<WalletResponse?> getWalletData() async {
-    final response = await http.get(Uri.parse(Urls.sendTopupRequest), headers: {
-      'Content-Type': 'application/json'
-    }).timeout(Duration(seconds: 60));
+    final response = await http
+        .get(Uri.parse(Urls.balance), headers: generateHeader())
+        .timeout(Duration(seconds: 60));
 
     if (checkValidations(response.body)) {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return WalletResponse.fromJson(responseJson);
     } else {
-      log('Failed to fatch data: ${response.body}');
+      log('Failed to fetch data: ${response.body}');
+    }
+    return null;
+  }
+
+  Future<TopupResponse?> getTopupRequests() async {
+    final response = await http
+        .get(Uri.parse(Urls.sendTopupRequest), headers: generateHeader())
+        .timeout(Duration(seconds: 60));
+
+    if (checkValidations(response.body)) {
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return TopupResponse.fromJson(responseJson);
+    } else {
+      log('Failed to fetch data: ${response.body}');
     }
     return null;
   }
@@ -223,8 +222,7 @@ class ApiService extends GetxService {
   Future<WalletResponse?> sendTopupRequest(Map<String, dynamic> data) async {
     final response = await http
         .post(Uri.parse(Urls.sendTopupRequest),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(data))
+            headers: generateHeader(), body: jsonEncode(data))
         .timeout(Duration(seconds: 60));
 
     if (checkValidations(response.body)) {
@@ -236,7 +234,7 @@ class ApiService extends GetxService {
     return null;
   }
 
-   //------------------Logout---------------------------//
+  //------------------Logout---------------------------//
 
   Future<LoginResponse?> logout() async {
     try {
@@ -256,4 +254,63 @@ class ApiService extends GetxService {
     return null;
   }
 
+  //------------------Issues---------------------------//
+
+  Future<GetIssueResponse?> getIssues() async {
+    try {
+      final response = await http
+          .get(Uri.parse(Urls.issues), headers: generateHeader())
+          .timeout(Duration(seconds: 60));
+
+      if (checkValidations(response.body)) {
+        final json = jsonDecode(response.body);
+        return GetIssueResponse.fromJson(json);
+      }
+    } catch (e) {
+      log('Api error fetching issues: $e');
+    }
+    return null;
+  }
+
+  Future<IssueResponse?> reportIssue(Map<String, dynamic> data) async {
+    try {
+      final response = await http
+          .post(Uri.parse(Urls.issues),
+              headers: generateHeader(), body: jsonEncode(data))
+          .timeout(Duration(seconds: 60));
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+
+      return IssueResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Api error reporting issue: $e');
+    }
+    return null;
+  }
+
+  Future<bool> updateIssue(int id, Map<String, dynamic> data) async {
+    try {
+      final response = await http
+          .patch(Uri.parse(Urls.issueDetail(id)),
+              headers: generateHeader(), body: jsonEncode(data))
+          .timeout(Duration(seconds: 60));
+
+      return checkValidations(response.body);
+    } catch (e) {
+      log('Api error updating issue: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteIssue(int id) async {
+    try {
+      final response = await http
+          .delete(Uri.parse(Urls.issueDetail(id)), headers: generateHeader())
+          .timeout(Duration(seconds: 60));
+
+      return checkValidations(response.body);
+    } catch (e) {
+      log('Api error deleting issue: $e');
+      return false;
+    }
+  }
 }

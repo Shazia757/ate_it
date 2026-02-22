@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ate_it/views/profile/issue_report_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/orders_controller.dart';
@@ -123,7 +124,7 @@ class OrdersView extends StatelessWidget {
               ],
             ),
             trailing: ElevatedButton(
-              onPressed: () => Get.to(()=>ReportIssueView(),
+              onPressed: () => Get.to(() => IssueReportView(),
                   arguments: order.orderId), // Passing OrderID string
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
@@ -138,41 +139,41 @@ class OrdersView extends StatelessWidget {
   }
 }
 
-class ReportIssueView extends StatelessWidget {
-  const ReportIssueView({super.key});
+// class ReportIssueView extends StatelessWidget {
+//   const ReportIssueView({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final orderId = Get.arguments as String;
-    final textController = TextEditingController();
-    final OrdersController controller = Get.find<OrdersController>();
+//   @override
+//   Widget build(BuildContext context) {
+//     // final orderId = Get.arguments as String;
+//     final textController = TextEditingController();
+//     final OrdersController controller = Get.find<OrdersController>();
 
-    return Scaffold(
-      appBar: AppBar(title: Text('Report Issue - #$orderId')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: textController,
-              maxLines: 5,
-              decoration: const InputDecoration(
-                hintText: 'Describe your issue here...',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                if (textController.text.isNotEmpty) {
-                  controller.reportIssue(orderId, textController.text);
-                }
-              },
-              child: const Text('Submit Report'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Report Issue ')),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16),
+//         child: Column(
+//           children: [
+//             TextField(
+//               controller: textController,
+//               maxLines: 5,
+//               decoration: const InputDecoration(
+//                 hintText: 'Describe your issue here...',
+//                 border: OutlineInputBorder(),
+//               ),
+//             ),
+//             const SizedBox(height: 16),
+//             ElevatedButton(
+//               onPressed: () {
+//                 if (textController.text.isNotEmpty) {
+//                   controller.reportIssue(orderId, textController.text);
+//                 }
+//               },
+//               child: const Text('Submit Report'),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

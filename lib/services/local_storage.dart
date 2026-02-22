@@ -41,4 +41,8 @@ class LocalStorage {
       return '';
     }
   }
+
+  clearAll() {
+    _box.erase();
+  }
 }

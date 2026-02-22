@@ -91,7 +91,7 @@ class CartController extends GetxController {
   Future<void> checkout() async {
     if (cartItems.isEmpty) return;
 
-    if (c.balance.value < totalAmount) {
+    if (int.parse(c.balance.value) < totalAmount) {
       Get.snackbar("Error", "Insufficient wallet balance. Please top up.");
       return;
     }

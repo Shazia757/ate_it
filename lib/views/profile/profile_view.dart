@@ -2,6 +2,8 @@ import 'package:ate_it/views/auth/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/profile_controller.dart';
+import 'issue_report_view.dart';
+import 'my_issues_view.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -58,11 +60,28 @@ class ProfileView extends StatelessWidget {
               //             'Pincode', controller.pincodeController, isEditing)),
               //   ],
               // ),
+              _ActionButton(
+                  icon: Icons.report,
+                  label: 'Report an Issue',
+                  onTap: () => Get.to(() => const IssueReportView()),
+                  isFullWidth: true),
+
+              const SizedBox(height: 10),
+              _ActionButton(
+                  icon: Icons.report_problem,
+                  label: 'Reported Issues',
+                  onTap: () => Get.to(() => const MyIssuesView()),
+                  isFullWidth: true),
+
+              const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
-                  Get.offAll(LoginView());
-                },
-                child: const Text('Logout'),
+                style: ElevatedButton.styleFrom(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 100)),
+                onPressed: () => controller.logout(),
+                child: controller.isLoading.value
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text('Logout'),
               ),
             ],
           );
@@ -85,6 +104,39 @@ class ProfileView extends StatelessWidget {
           filled: !isEditing,
           fillColor: isEditing ? Colors.white : Colors.grey.shade100,
         ),
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool isFullWidth;
+
+  const _ActionButton(
+      {required this.icon,
+      required this.label,
+      required this.onTap,
+      this.isFullWidth = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.teal,
+        elevation: 1,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 125),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 32),
+          const SizedBox(height: 8),
+          Text(label),
+        ],
       ),
     );
   }

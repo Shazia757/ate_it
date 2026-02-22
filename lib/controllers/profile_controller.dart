@@ -1,10 +1,12 @@
 import 'package:ate_it/services/api.dart';
 import 'package:ate_it/services/local_storage.dart';
+import 'package:ate_it/views/auth/login_view.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 class ProfileController extends GetxController {
   var isEditing = false.obs;
+  var isLoading = false.obs;
 
   late TextEditingController firstNameController;
   late TextEditingController lastNameController;
@@ -37,6 +39,19 @@ class ProfileController extends GetxController {
     //     TextEditingController(text: LocalStorage().readUser().city);
     // pincodeController =
     //     TextEditingController(text: LocalStorage().readUser().pincode);
+  }
+
+  void logout() {
+    isLoading.value = true;
+    ApiService().logout().then(
+      (value) {
+        isLoading.value = false;
+        if (value?.status ?? false) {
+          LocalStorage().clearAll();
+          Get.offAll(() => LoginView());
+        }
+      },
+    );
   }
 
   void toggleEdit() async {

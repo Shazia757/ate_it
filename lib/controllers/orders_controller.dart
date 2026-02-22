@@ -22,7 +22,7 @@ class OrdersController extends GetxController {
       log('Api working');
       ApiService().getOrders().then(
         (value) {
-          orders.assignAll(value?.data??[]);
+          orders.assignAll(value?.data ?? []);
           currOrders.assignAll(orders
               .where(
                   (p0) => p0.status == 'PENDING' || p0.status == 'Food Packed')
@@ -30,14 +30,13 @@ class OrdersController extends GetxController {
           pastOrders.assignAll(orders
               .where((o) => o.status == 'COMPLETED' || o.status == 'CANCELLED')
               .toList());
+          isLoading.value = false;
         },
       );
     } catch (e) {
       log('Order Api error: $e');
       Get.snackbar('Error', 'Failed to fetch orders');
-    } finally {
-      isLoading.value = false;
-    }
+    } 
   }
 
   void reportIssue(String orderId, String issue) {

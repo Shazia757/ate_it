@@ -6,6 +6,7 @@ class Urls {
   static const String login = '$base/auth/auth/login/';
   static const String logout = '$base/auth/auth/logout/';
   static const String profile = '$base/auth/auth/profile/';
+  static const String balance='$base/auth/auth/wallet';
 
 // Location
 //   static const String states =
@@ -19,4 +20,8 @@ class Urls {
       '$base/customer/restaurants/$id/menu/';
   static const String orders = '$base/customer/orders/';
   static const String sendTopupRequest = '$base/customer/wallet/topup/';
+
+  // Issues
+  static const String issues = '$base/customer/issues/';
+  static String issueDetail(int id) => '$base/customer/issues/$id/';
 }

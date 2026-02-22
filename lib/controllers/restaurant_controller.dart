@@ -8,7 +8,7 @@ class RestaurantController extends GetxController {
   final CartController c = Get.put(CartController());
 
   var meals = <FoodItem>[].obs;
-  var isLoading = false.obs;
+  var isLoading = true.obs;
   var currentRestaurantId = (-1).obs;
   var currentRestaurantName = ''.obs;
 
@@ -25,21 +25,21 @@ class RestaurantController extends GetxController {
   void fetchMenu(int restaurantId) {
     currentRestaurantId.value = restaurantId;
     try {
+      isLoading.value = true;
+
       ApiService().getRestaurantMenu(restaurantId).then(
         (value) {
           meals.assignAll(value?.data ?? []);
+          isLoading.value = false;
         },
       );
     } catch (e) {
       Get.snackbar('Error', 'Failed to load menu');
-    } finally {
-      isLoading.value = false;
     }
   }
 
   void addToCart(FoodItem meal) {
-    c.addToCart(
-        meal, currentRestaurantId.value, currentRestaurantName.value);
+    c.addToCart(meal, currentRestaurantId.value, currentRestaurantName.value);
   }
 
   Future<void> openMap(RestaurantStatus restaurant) async {
