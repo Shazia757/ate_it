@@ -24,6 +24,9 @@ class IssueController extends GetxController {
       final response = await ApiService().getIssues().then(
         (value) {
           issues.assignAll(value?.data?.results ?? []);
+          issues.sort(
+            (a, b) => b.status!.compareTo(a.status!),
+          );
         },
       );
       if (response != null) {
@@ -35,10 +38,6 @@ class IssueController extends GetxController {
   }
 
   void submitIssue() async {
-    if (titleController.text.isEmpty || descriptionController.text.isEmpty) {
-      Get.snackbar('Error', 'Please fill all fields');
-    }
-
     isLoading.value = true;
     try {
       await ApiService().reportIssue({

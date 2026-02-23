@@ -22,7 +22,7 @@ class LoginResponse {
   }
 
   Map<String, dynamic> toJson() {
-    return {'status': status, 'message': message};
+    return {'status': status, 'message': message, 'data': data};
   }
 
   @override

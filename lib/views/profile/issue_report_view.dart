@@ -39,32 +39,39 @@ class IssueReportView extends StatelessWidget {
             Obx(() => SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () async => controller.isLoading.value
-                        ? CircularProgressIndicator()
-                        : showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                title: Text('Report issue'),
-                                content: Text(
-                                    'Are you sure you want to report the issue?'),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () => Get.back(),
-                                      child: Text("Cancel")),
-                                  TextButton(
-                                    onPressed: () => controller.submitIssue(),
-                                    child: Obx(() =>
-                                        (controller.isLoading.value)
-                                            ? CircularProgressIndicator()
-                                            : Text("Confirm")),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
+                    onPressed: () async {
+                      (controller.titleController.text.isEmpty ||
+                              controller.descriptionController.text.isEmpty)
+                          ? Get.snackbar('Error', 'Please fill all fields')
+                          : controller.isLoading.value
+                              ? CircularProgressIndicator()
+                              : showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12)),
+                                      title: Text('Report issue'),
+                                      content: Text(
+                                          'Are you sure you want to report the issue?'),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () => Get.back(),
+                                            child: Text("Cancel")),
+                                        TextButton(
+                                          onPressed: () =>
+                                              controller.submitIssue(),
+                                          child: Obx(() =>
+                                              (controller.isLoading.value)
+                                                  ? CircularProgressIndicator()
+                                                  : Text("Confirm")),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),

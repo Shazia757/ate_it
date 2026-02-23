@@ -4,7 +4,6 @@ import 'package:ate_it/model/auth_model.dart';
 import 'package:ate_it/model/issue_model.dart';
 import 'package:ate_it/model/order_model.dart';
 import 'package:ate_it/model/restaurant_model.dart';
-import 'package:ate_it/model/user_model.dart';
 import 'package:ate_it/model/wallet_model.dart';
 import 'package:ate_it/services/urls.dart';
 import 'package:ate_it/services/utils.dart';
@@ -32,22 +31,27 @@ class ApiService {
       }
     } catch (e) {
       log('Api error during login:$e');
+      checkConnectivity();
     }
     return null;
   }
 
   Future<LoginResponse?> register(Map<String, dynamic> data) async {
-    final response = await http
-        .post(Uri.parse(Urls.register),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(data))
-        .timeout(Duration(seconds: 60));
+    try {
+      final response = await http
+          .post(Uri.parse(Urls.register),
+              headers: {'Content-Type': 'application/json'},
+              body: jsonEncode(data))
+          .timeout(Duration(seconds: 60));
 
-    if (checkValidations(response.body)) {
-      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-      return LoginResponse.fromJson(responseJson);
-    } else {
-      log('Failed to register: ${response.body}');
+      if (checkValidations(response.body)) {
+        final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+        return LoginResponse.fromJson(responseJson);
+      } else {
+        log('Failed to register: ${response.body}');
+      }
+    } catch (e) {
+      checkConnectivity();
     }
     return null;
   }
@@ -70,6 +74,7 @@ class ApiService {
       }
     } catch (e) {
       log('Api error:$e');
+      checkConnectivity();
     }
     return null;
   }

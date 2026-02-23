@@ -46,10 +46,8 @@ class User {
       'email': email,
       'role': role,
       'phone_number': phoneNumber,
-      // 'state': state,
-      // 'city': city,
-      // 'district': district,
-      // 'pincode': pincode,
+      'first_name': firstName,
+      'last_name': lastName
     };
   }
 }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 class ProfileController extends GetxController {
   var isEditing = false.obs;
   var isLoading = false.obs;
+  var isButtonLoading = false.obs;
 
   late TextEditingController firstNameController;
   late TextEditingController lastNameController;
@@ -42,7 +43,7 @@ class ProfileController extends GetxController {
   }
 
   void logout() {
-    isLoading.value = true;
+    isButtonLoading.value = true;
     ApiService().logout().then(
       (value) {
         isLoading.value = false;
@@ -56,16 +57,14 @@ class ProfileController extends GetxController {
 
   void toggleEdit() async {
     if (isEditing.value) {
+      isLoading.value = true;
+
       await ApiService().updateProfile({
         'username': usernameController.text,
         'first_name': firstNameController.text,
         'last_name': lastNameController.text,
         'email': emailController.text,
         'phone_number': phoneController.text,
-        // 'state': stateController.text,
-        // 'district': districtController.text,
-        // 'city': cityController.text,
-        // 'pincode': pincodeController.text
       }).then(
         (value) {
           if (value?.status == true) {
@@ -73,11 +72,9 @@ class ProfileController extends GetxController {
           } else {
             Get.snackbar('Error', 'Failed to update');
           }
+          isLoading.value = false;
         },
       );
-      // Save changes logic
-
-      Get.snackbar('Success', 'Profile Updated');
     }
     isEditing.toggle();
   }

@@ -1,6 +1,7 @@
 import 'package:ate_it/controllers/cart_controller.dart';
 import 'package:ate_it/model/restaurant_model.dart';
 import 'package:ate_it/services/api.dart';
+import 'package:ate_it/services/utils.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -44,15 +45,19 @@ class RestaurantController extends GetxController {
 
   Future<void> openMap(RestaurantStatus restaurant) async {
     // Mock coordinates
-    final double lat = 12.9716;
-    final double lng = 77.5946;
-    final Uri googleMapsUrl =
-        Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+    try {
+      final double lat = 12.9716;
+      final double lng = 77.5946;
+      final Uri googleMapsUrl = Uri.parse(
+          'https://www.google.com/maps/search/?api=1&query=$lat,$lng');
 
-    if (await canLaunchUrl(googleMapsUrl)) {
-      await launchUrl(googleMapsUrl);
-    } else {
-      Get.snackbar('Error', 'Could not open maps');
+      if (await canLaunchUrl(googleMapsUrl)) {
+        await launchUrl(googleMapsUrl);
+      } else {
+        Get.snackbar('Error', 'Could not open maps');
+      }
+    } catch (e) {
+      checkConnectivity();
     }
   }
 }

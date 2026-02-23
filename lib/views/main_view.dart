@@ -1,3 +1,4 @@
+import 'package:ate_it/views/profile/my_issues_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../views/home/home_view.dart';
@@ -27,6 +28,7 @@ class MainView extends StatelessWidget {
               HomeView(),
               OrdersView(),
               WalletView(),
+              MyIssuesView(),
               ProfileView(),
             ],
           )),
@@ -43,6 +45,7 @@ class MainView extends StatelessWidget {
                   icon: Icon(Icons.receipt_long), label: 'Orders'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.account_balance_wallet), label: 'Wallet'),
+              BottomNavigationBarItem(icon: Icon(Icons.flag), label: 'Issues'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.person), label: 'Profile'),
             ],
