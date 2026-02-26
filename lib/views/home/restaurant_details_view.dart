@@ -17,13 +17,6 @@ class RestaurantDetailsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(restaurant?.restaurantName ?? ''),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.directions),
-            tooltip: 'Get Directions',
-            onPressed: () => c.openMap(restaurant),
-          ),
-        ],
       ),
       body: Column(
         children: [
