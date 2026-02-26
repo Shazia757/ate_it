@@ -43,7 +43,7 @@ class RestaurantController extends GetxController {
     c.addToCart(meal, currentRestaurantId.value, currentRestaurantName.value);
   }
 
-  Future<void> openMap(RestaurantStatus restaurant) async {
+  Future<void> openMap(RestaurantStatus? restaurant) async {
     // Mock coordinates
     try {
       final double lat = 12.9716;

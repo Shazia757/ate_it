@@ -10,6 +10,7 @@ class CartController extends GetxController {
   var cartItems = <FoodItem, int>{}.obs;
   var restaurantId = (-1).obs;
   var restaurantName = ''.obs;
+  var isLoading = false.obs;
 
   double get totalAmount {
     double total = 0.0;
@@ -91,10 +92,11 @@ class CartController extends GetxController {
   Future<void> checkout() async {
     if (cartItems.isEmpty) return;
 
-    if (int.parse(c.balance.value) < totalAmount) {
+    if (double.parse(c.balance.value) < totalAmount) {
       Get.snackbar("Error", "Insufficient wallet balance. Please top up.");
       return;
     }
+    isLoading.value = true;
 
     List<Map<String, dynamic>> itemsPayload = [];
     cartItems.forEach((item, qty) {
@@ -113,15 +115,19 @@ class CartController extends GetxController {
     //   return;
     // }
 
-    var order = await ApiService().createOrder(orderData);
-    if (order != null) {
-      Get.snackbar(
-          "Success", "Order placed successfully! ID: ${order.orderId}");
-      clearCart();
-      Get.back();
-    } else {
-      c.requestTopup(totalAmount);
-      Get.snackbar("Error", "Failed to place order. Amount refunded.");
-    }
+    await ApiService().createOrder(orderData).then(
+      (value) {
+        if (value?.status == true) {
+          Get.snackbar("Success", "Order placed successfully!");
+          clearCart();
+          // c.deductBalance(amount);
+          Get.back();
+        } else {
+          c.requestTopup(totalAmount);
+          Get.snackbar("Error", "Failed to place order. Amount refunded.");
+        }
+        isLoading.value = false;
+      },
+    );
   }
 }

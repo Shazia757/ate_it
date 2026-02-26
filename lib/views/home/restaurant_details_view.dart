@@ -6,16 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RestaurantDetailsView extends StatelessWidget {
-  const RestaurantDetailsView({super.key});
+  const RestaurantDetailsView({super.key, required this.restaurant});
+  final RestaurantStatus restaurant;
 
   @override
   Widget build(BuildContext context) {
-    final restaurant = Get.arguments as RestaurantStatus;
+    final restaurant = Get.arguments as RestaurantStatus?;
     final RestaurantController c = Get.put(RestaurantController());
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(restaurant.restaurantName ?? ''),
+        title: Text(restaurant?.restaurantName ?? ''),
         actions: [
           IconButton(
             icon: const Icon(Icons.directions),

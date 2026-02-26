@@ -96,8 +96,7 @@ class HomeView extends StatelessWidget {
                           ),
                           onTap: isOpen
                               ? () {
-                                  // Navigate to Restaurant Details
-                                  Get.to(() => RestaurantDetailsView(),
+                                  Get.to(() => RestaurantDetailsView(restaurant: restaurant,),
                                       arguments: restaurant);
                                 }
                               : null,

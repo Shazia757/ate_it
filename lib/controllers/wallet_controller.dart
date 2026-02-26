@@ -68,17 +68,18 @@ class WalletController extends GetxController {
     );
   }
 
-  // bool deductBalance(double amount) {
-  //   if (balance.value >= amount) {
-  //     balance.value -= amount;
-  //     transactions.add({
-  //       "id": "TXN${DateTime.now().millisecondsSinceEpoch}",
-  //       "amount": -amount,
-  //       "type": "Debit",
-  //       "date": DateTime.now().toString()
-  //     });
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  bool deductBalance(double amount) {
+   var bal= double.parse(balance.value);
+    if (bal >= amount) {
+      bal = bal - amount;
+      // transactions.add({
+      //   "id": "TXN${DateTime.now().millisecondsSinceEpoch}",
+      //   "amount": -amount,
+      //   "type": "Debit",
+      //   "date": DateTime.now().toString()
+      // });
+      return true;
+    }
+    return false;
+  }
 }

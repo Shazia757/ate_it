@@ -3,7 +3,7 @@ import 'package:ate_it/model/restaurant_model.dart';
 class OrderResponse {
   bool? status;
   String? message;
-  List<OrderDetailedResponse>? data;
+  List<OrderDetailedResponse> data;
 
   OrderResponse({
     required this.status,
@@ -13,9 +13,8 @@ class OrderResponse {
 
   factory OrderResponse.fromJson(Map<String, dynamic> json) {
     return OrderResponse(
-      data: (json['data'] as List<dynamic>?)
-          ?.map(
-              (e) => OrderDetailedResponse.fromJson(e as Map<String, dynamic>))
+      data: (json['data'] as List<dynamic>)
+          .map((e) => OrderDetailedResponse.fromJson(e as Map<String, dynamic>))
           .toList(),
       status: json['status'] as bool?,
       message: json['message'] as String?,
@@ -27,7 +26,7 @@ class OrderResponse {
       'status': status,
       'message': message,
       'data': data
-          ?.map(
+          .map(
             (e) => e.toJson,
           )
           .toList()

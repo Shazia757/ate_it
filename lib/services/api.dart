@@ -153,21 +153,14 @@ class ApiService {
 
   //--------------------Create Order---------------------------//
 
-  Future<OrderModel?> createOrder(Map<String, dynamic> orderData) async {
+  Future<OrderResponse?> createOrder(Map<String, dynamic> orderData) async {
     try {
       final response = await http.post(Uri.parse(Urls.orders),
           headers: generateHeader(), body: jsonEncode(orderData));
       log(response.body);
       if (checkValidations(response.body)) {
-        final json = jsonDecode(response.body);
-        final data = json['data'];
-        return OrderModel(
-            id: 0,
-            orderId: data['order_id'],
-            totalAmount: data['total_amount'],
-            status: data['status'],
-            restaurantName: null,
-            createdAt: null);
+        final json = jsonDecode(response.body) as Map<String, dynamic>;
+        return OrderResponse.fromJson(json);
       }
     } catch (e) {
       checkConnectivity();

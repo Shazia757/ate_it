@@ -1,4 +1,5 @@
 import 'package:ate_it/controllers/cart_controller.dart';
+import 'package:ate_it/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -61,10 +62,8 @@ class CartView extends StatelessWidget {
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           IconButton(
                             icon: const Icon(Icons.add_circle_outline),
-                            onPressed: () => c.addToCart(
-                                item,
-                                c.restaurantId.value,
-                                c.restaurantName.value),
+                            onPressed: () => c.addToCart(item,
+                                c.restaurantId.value, c.restaurantName.value),
                           ),
                         ],
                       ),
@@ -110,8 +109,14 @@ class CartView extends StatelessWidget {
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () => c.checkout(),
-                      child: const Text('Pay & Order',
-                          style: TextStyle(fontSize: 18)),
+                      child: c.isLoading.value
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text('Pay & Order',
+                              style: TextStyle(fontSize: 16)),
                     ),
                   ),
                 ],
