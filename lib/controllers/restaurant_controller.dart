@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ate_it/controllers/cart_controller.dart';
 import 'package:ate_it/model/restaurant_model.dart';
 import 'package:ate_it/services/api.dart';
@@ -30,7 +32,12 @@ class RestaurantController extends GetxController {
 
       ApiService().getRestaurantMenu(restaurantId).then(
         (value) {
-          meals.assignAll(value?.data ?? []);
+          if (value?.data != null) {
+            meals.assignAll(value!.data!.where(
+              (element) => element.quantity != 0,
+            ));
+          }
+
           isLoading.value = false;
         },
       );

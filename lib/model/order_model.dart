@@ -12,10 +12,20 @@ class OrderResponse {
   });
 
   factory OrderResponse.fromJson(Map<String, dynamic> json) {
-    return OrderResponse(
-      data: (json['data'] as List<dynamic>)
+    final rawData = json['data'];
+
+    List<OrderDetailedResponse> parsedData = [];
+
+    if (rawData is List) {
+      parsedData = rawData
           .map((e) => OrderDetailedResponse.fromJson(e as Map<String, dynamic>))
-          .toList(),
+          .toList();
+    } else if (rawData is Map<String, dynamic>) {
+      parsedData = [OrderDetailedResponse.fromJson(rawData)];
+    }
+
+    return OrderResponse(
+      data: parsedData,
       status: json['status'] as bool?,
       message: json['message'] as String?,
     );
@@ -27,7 +37,7 @@ class OrderResponse {
       'message': message,
       'data': data
           .map(
-            (e) => e.toJson,
+            (e) => data.map((e) => e.toJson()).toList(),
           )
           .toList()
     };

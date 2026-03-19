@@ -14,6 +14,12 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('AteIt - Home'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => c.fetchRestaurants(),
+          )
+        ],
         automaticallyImplyLeading: false,
       ),
       body: Obx(() => (c.isLoading.value)

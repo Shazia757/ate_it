@@ -17,6 +17,12 @@ class OrdersView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('My Orders'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () => controller.fetchOrders(),
+            )
+          ],
           automaticallyImplyLeading: false,
           bottom: const TabBar(
             tabs: [

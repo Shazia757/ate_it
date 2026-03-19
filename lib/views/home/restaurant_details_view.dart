@@ -17,6 +17,12 @@ class RestaurantDetailsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(restaurant?.restaurantName ?? ''),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => c.fetchMenu(c.currentRestaurantId.value),
+          )
+        ],
       ),
       body: Column(
         children: [

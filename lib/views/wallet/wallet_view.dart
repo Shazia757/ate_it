@@ -13,6 +13,12 @@ class WalletView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Wallet'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => controller.fetchWalletData(),
+          )
+        ],
         automaticallyImplyLeading: false,
       ),
       body: Obx(() {
@@ -170,7 +176,6 @@ class TopupView extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class TopupRequestsView extends StatelessWidget {

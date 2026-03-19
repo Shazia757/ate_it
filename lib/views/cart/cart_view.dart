@@ -110,10 +110,8 @@ class CartView extends StatelessWidget {
                       ),
                       onPressed: () => c.checkout(),
                       child: c.isLoading.value
-                          ? Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
+                          ? CircularProgressIndicator(
+                              color: Colors.white,
                             )
                           : const Text('Pay & Order',
                               style: TextStyle(fontSize: 16)),

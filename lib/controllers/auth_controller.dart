@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
-
   var isLoading = false.obs;
   var errorMessage = ''.obs;
 
@@ -51,7 +50,7 @@ class AuthController extends GetxController {
         .login(loginUsernameController.text, loginPasswordController.text)
         .then(
       (response) async {
-        if (response?.status == true) {
+        if (response?.status == true && response?.data?.role == 'CUSTOMER') {
           await LocalStorage().writeUser(response?.data ?? User());
           await LocalStorage().writePassword(loginPasswordController.text);
 

@@ -157,11 +157,10 @@ class ApiService {
     try {
       final response = await http.post(Uri.parse(Urls.orders),
           headers: generateHeader(), body: jsonEncode(orderData));
-      log(response.body);
       if (checkValidations(response.body)) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         return OrderResponse.fromJson(json);
-      }
+      } else {}
     } catch (e) {
       checkConnectivity();
     }
@@ -176,6 +175,7 @@ class ApiService {
       final response = await http
           .get(Uri.parse(Urls.orders), headers: generateHeader())
           .timeout(Duration(seconds: 60));
+      log('${response.body}Response');
       if (checkValidations(response.body)) {
         final json = jsonDecode(response.body);
         return OrderResponse.fromJson(json);

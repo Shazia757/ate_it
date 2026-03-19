@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ate_it/model/restaurant_model.dart';
 // import 'package:ate_it/services/api.dart';
 import 'package:ate_it/controllers/wallet_controller.dart';
@@ -117,7 +119,9 @@ class CartController extends GetxController {
 
     await ApiService().createOrder(orderData).then(
       (value) {
-        if (value?.status == true) {
+        if (value == null) {
+          Get.snackbar("Error", "Something went wrong. Try again.");
+        } else if (value.status == true) {
           Get.snackbar("Success", "Order placed successfully!");
           clearCart();
           // c.deductBalance(amount);
