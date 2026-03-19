@@ -55,8 +55,24 @@ class RestaurantDetailsView extends StatelessWidget {
                                       size: 24,
                                     ),
                                     title: Text(meal.name ?? ''),
-                                    subtitle: Text(
-                                        '₹${meal.price} ${meal.originalPrice != null ? "(${meal.originalPrice})" : ""}'),
+                                    subtitle: Row(children: [
+                                      Text(
+                                        '₹${meal.price}',
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      if (meal.originalPrice != null)
+                                        Text(
+                                          '₹${meal.originalPrice}',
+                                          style: const TextStyle(
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                    ]),
                                     trailing: isAvailable
                                         ? IconButton(
                                             icon: const Icon(

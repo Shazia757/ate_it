@@ -188,29 +188,94 @@ class TopupRequestsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Topup Requests')),
       body: Obx(() => RefreshIndicator(
-            onRefresh: () async => controller.getTopupRequests(),
-            child: controller.isLoading.isTrue
-                ? Center(child: CircularProgressIndicator())
-                : controller.topupRequestsList.isEmpty
-                    ? Center(child: Text("No requests available"))
-                    : ListView.builder(
-                        itemCount: controller.topupRequestsList.length,
-                        itemBuilder: (context, index) {
-                          final req = controller.topupRequestsList[index];
-                          return ListTile(
-                            title: Text('₹${req.amount}'),
-                            subtitle: Text(req.createdAt.toString()),
-                            trailing: Chip(
-                              label: Text(req.status.toString()),
-                              backgroundColor:
-                                  req.status.toString() == 'PENDING'
-                                      ? Colors.orange
-                                      : Colors.green,
-                            ),
-                          );
-                        },
-                      ),
-          )),
+          onRefresh: () async => controller.getTopupRequests(),
+          child: controller.isLoading.isTrue
+              ? Center(child: CircularProgressIndicator())
+              : controller.topupRequestsList.isEmpty
+                  ? Center(child: Text("No requests available"))
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: controller.topupRequestsList.length,
+                      itemBuilder: (context, index) {
+                        final req = controller.topupRequestsList[index];
+
+                        final isPending = req.status.toString() == 'PENDING';
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 14),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              )
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // 🔴 TOP ROW (Amount + Status)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "₹${req.amount}",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: isPending
+                                          ? Colors.orange.shade100
+                                          : Colors.green.shade100,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      req.status.toString(),
+                                      style: TextStyle(
+                                        color: isPending
+                                            ? Colors.orange
+                                            : Colors.green,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              // 📅 DATE
+                              Row(
+                                children: [
+                                  Icon(Icons.calendar_today,
+                                      size: 14, color: Colors.grey.shade600),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    DateTime.parse(req.createdAt.toString())
+                                        .toLocal()
+                                        .toString()
+                                        .split(' ')[0],
+                                    style:
+                                        TextStyle(color: Colors.grey.shade600),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ))),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   RxList<RestaurantStatus> restaurantList = <RestaurantStatus>[].obs;
   var isLoading = true.obs;
+  var searchQuery = ''.obs;
 
   @override
   void onInit() {
@@ -27,4 +28,14 @@ class HomeController extends GetxController {
       log(e.toString());
     }
   }
+
+  List get filteredRestaurants {
+  if (searchQuery.value.isEmpty) return restaurantList;
+
+  return restaurantList.where((r) {
+    return (r.restaurantName ?? '')
+        .toLowerCase()
+        .contains(searchQuery.value.toLowerCase());
+  }).toList();
+}
 }
